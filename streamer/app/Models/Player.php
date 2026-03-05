@@ -11,6 +11,11 @@ class Player extends Model
         'type',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function wallet()
     {
         return $this->hasOne(VipWallet::class);

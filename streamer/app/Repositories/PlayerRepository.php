@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Player;
-use App\Models\VipWallet;
 
 class PlayerRepository
 {
@@ -13,22 +12,34 @@ class PlayerRepository
         return Player::create($data);
     }
 
-    public function createWallet(int $playerId, int $playBalance = 0)
-    {
-        return VipWallet::create([
-            'player_id' => $playerId,
-            'play_balance' => $playBalance
-        ]);
-    }
-
     public function find(int $id): ?Player
     {
         return Player::with('wallet')->find($id);
     }
 
-    public function getAll()
+    public function findOrFail(int $id): Player
+    {
+        return Player::findOrFail($id);
+    }
+
+    public function all()
     {
         return Player::with('wallet')->get();
     }
 
+    public function update(Player $player, array $data): Player
+    {
+        $player->update($data);
+        return $player;
+    }
+
+    public function delete(Player $player): bool
+    {
+        return $player->delete();
+    }
+
+    public function findByName(string $name): ?Player
+    {
+        return Player::where('name', $name)->first();
+    }
 }

@@ -14,12 +14,16 @@ return new class extends Migration
         Schema::create('players', function (Blueprint $table) {
 
             $table->id();
-
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained()
+                ->cascadeOnDelete(); // Optional relationship with users
             $table->string('name');
 
             $table->enum('type', [
                 'VIP',
-                'PUBLIC'
+                'PUBLIC',
+                'STREAMER'
             ]);
 
             $table->timestamps();

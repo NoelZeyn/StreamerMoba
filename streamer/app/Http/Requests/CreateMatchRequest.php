@@ -11,7 +11,7 @@ class CreateMatchRequest extends FormRequest
         return [
 
             'season_id' => 'required|exists:seasons,id',
-            'players' => 'required|array|min:1|max:5',
+            'players' => 'required|array|min:1|max:10',
             'players.*.player_id' => [
                 'required',
                 'exists:players,id',

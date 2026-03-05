@@ -24,8 +24,13 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'channel_name'
     ];
+
     public function matches() {
         return $this->hasMany(Matchs::class);
+    }
+
+    public function players() {
+        return $this->hasMany(Player::class);
     }
 
     /**

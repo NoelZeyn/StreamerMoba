@@ -7,8 +7,7 @@ use App\Models\MatchPlayer;
 
 class MatchRepository
 {
-
-    public function createMatch(array $data): Matchs
+    public function create(array $data): Matchs
     {
         return Matchs::create($data);
     }
@@ -18,11 +17,29 @@ class MatchRepository
         MatchPlayer::insert($players);
     }
 
-    public function getMatchHistory(int $userId)
+    public function findById(int $matchId): ?Matchs
     {
-        return Matchs::with('players.hero', 'players.role', 'players.player')
-            ->where('user_id', $userId)
-            ->latest()
-            ->get();
+        return Matchs::find($matchId);
+    }
+
+    public function findWithPlayers(int $matchId): Matchs
+    {
+        return Matchs::with([
+            'players.hero',
+            'players.role',
+            'players.player'
+        ])->findOrFail($matchId);
+    }
+
+    public function historyByUser(int $userId)
+    {
+        return Matchs::with([
+            'players.hero',
+            'players.role',
+            'players.player'
+        ])
+        ->where('user_id', $userId)
+        ->latest()
+        ->get();
     }
 }

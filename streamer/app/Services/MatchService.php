@@ -3,23 +3,26 @@
 namespace App\Services;
 
 use App\Repositories\MatchRepository;
-use App\Models\Player;
-use App\Models\VipWallet;
+use App\Repositories\PlayerRepository;
+use App\Repositories\VipWalletRepository;
 use Illuminate\Support\Facades\DB;
-use Exception;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class MatchService
 {
+
     public function __construct(
-        protected MatchRepository $matchRepository
+        protected MatchRepository $matchRepository,
+        protected PlayerRepository $playerRepository,
+        protected VipWalletRepository $walletRepository
     ) {}
 
     public function createMatch($dto)
     {
         return DB::transaction(function () use ($dto) {
 
-            $match = $this->matchRepository->createMatch([
+            $match = $this->matchRepository->create([
                 'user_id' => Auth::id(),
                 'season_id' => $dto->season_id,
                 'played_at' => now()
@@ -29,25 +32,23 @@ class MatchService
 
             foreach ($dto->players as $playerDTO) {
 
-                $player = Player::findOrFail($playerDTO->player_id);
+                $player = $this->playerRepository->findOrFail($playerDTO->player_id);
 
                 if ($player->type === 'VIP') {
 
-                    $wallet = VipWallet::where('player_id', $player->id)
-                        ->lockForUpdate()
-                        ->first();
+                    $wallet = $this->walletRepository
+                        ->lockByPlayer($player->id);
 
                     if (!$wallet || $wallet->play_balance <= 0) {
-                        throw new Exception("VIP play balance empty");
+                        throw new Exception("VIP balance empty");
                     }
 
-                    $wallet->decrement('play_balance');
+                    $this->walletRepository->decrement($wallet, 1);
                 }
-
 
                 $playersData[] = [
                     'match_id' => $match->id,
-                    'player_id' => $playerDTO->player_id,
+                    'player_id' => $player->id,
                     'hero_id' => $playerDTO->hero_id,
                     'role_id' => $playerDTO->role_id,
                     'created_at' => now(),
@@ -57,11 +58,7 @@ class MatchService
 
             $this->matchRepository->insertPlayers($playersData);
 
-            return $match->load([
-                'players.hero',
-                'players.role',
-                'players.player'
-            ]);
+            return $this->matchRepository->findWithPlayers($match->id);
         });
     }
 }
