@@ -22,7 +22,11 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'channel_name'
     ];
+    public function matches() {
+        return $this->hasMany(Matchs::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.
