@@ -7,10 +7,12 @@ use App\DTO\MatchPlayerDTO;
 use App\Http\Requests\CreateMatchRequest;
 use App\Services\MatchService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Exception;
 
 class MatchController extends Controller
 {
+    use AuthorizesRequests;
     public function __construct(
         protected MatchService $matchService
     ) {}
@@ -41,6 +43,30 @@ class MatchController extends Controller
                 'message' => 'Match created successfully',
                 'data' => $match
             ], 201);
+
+        } catch (Exception $e) {
+
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function show($id): JsonResponse
+    {
+        try {
+            $match = $this->matchService->getMatch($id);
+
+            if (!$match) {
+                return response()->json([
+                    'message' => 'Match not found'
+                ], 404);
+            }
+            $this->authorize('view', $match);
+
+            return response()->json([
+                'data' => $match
+            ], 200);
 
         } catch (Exception $e) {
 

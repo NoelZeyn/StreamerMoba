@@ -61,4 +61,14 @@ class MatchService
             return $this->matchRepository->findWithPlayers($match->id);
         });
     }
+
+    public function listMatches()
+    {
+        return $this->matchRepository->listWithPlayers();
+    }
+
+    public function getMatch(int $matchId)
+    {
+        return $this->matchRepository->findWithPlayers($matchId);
+    }
 }

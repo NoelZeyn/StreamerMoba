@@ -1,0 +1,5 @@
+v1
+- tambahkan policy
+- perhatikan relasi
+- test api
+- tamabahkan fitur

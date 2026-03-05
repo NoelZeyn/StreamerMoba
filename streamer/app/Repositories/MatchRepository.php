@@ -12,6 +12,15 @@ class MatchRepository
         return Matchs::create($data);
     }
 
+    public function listWithPlayers()
+    {
+        return Matchs::with([
+            'players.hero',
+            'players.role',
+            'players.player'
+        ])->get();
+    }
+
     public function insertPlayers(array $players): void
     {
         MatchPlayer::insert($players);

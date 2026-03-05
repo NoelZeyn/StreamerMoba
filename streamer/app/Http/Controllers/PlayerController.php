@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\DTO\CreatePlayerDTO;
 use App\Http\Requests\CreatePlayerRequest;
+use App\Models\Player;
 use App\Services\PlayerService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Exception;
 
 class PlayerController extends Controller
 {
+    use AuthorizesRequests;
 
     public function __construct(
         protected PlayerService $playerService
@@ -20,11 +23,18 @@ class PlayerController extends Controller
      */
     public function index(): JsonResponse
     {
-        $players = $this->playerService->list();
+        try {
+            $this->authorize('view', Player::class);
+            $players = $this->playerService->list();
 
-        return response()->json([
-            'data' => $players
-        ]);
+            return response()->json([
+                'data' => $players
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ], 400);
+        }
     }
 
     /**
@@ -45,7 +55,6 @@ class PlayerController extends Controller
                 'message' => 'Player created successfully',
                 'data' => $player
             ], 201);
-
         } catch (Exception $e) {
 
             return response()->json([
@@ -59,34 +68,50 @@ class PlayerController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $player = $this->playerService->find($id);
+        try {
+            $player = $this->playerService->find($id);
 
-        if (!$player) {
+            if (!$player) {
+                return response()->json([
+                    'message' => 'Player not found'
+                ], 404);
+            }
+
+            $this->authorize('view', $player);
+
             return response()->json([
-                'message' => 'Player not found'
-            ], 404);
-        }
+                'data' => $player
+            ]);
+        } catch (Exception $e) {
 
-        return response()->json([
-            'data' => $player
-        ]);
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
+    
 
     /**
      * Delete player
      */
     public function destroy(int $id): JsonResponse
     {
-        $deleted = $this->playerService->delete($id);
+        try {
 
-        if (!$deleted) {
+            $player = $this->playerService->find($id);
+
+            $this->authorize('delete', $player);
+
+            $this->playerService->delete($id);
+
             return response()->json([
-                'message' => 'Player not found'
-            ], 404);
-        }
+                'message' => 'Player deleted'
+            ]);
+        } catch (Exception $e) {
 
-        return response()->json([
-            'message' => 'Player deleted'
-        ]);
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 }

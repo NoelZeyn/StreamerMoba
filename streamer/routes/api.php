@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MatchController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PlayerController;
 use Illuminate\Container\Attributes\Auth;
 
