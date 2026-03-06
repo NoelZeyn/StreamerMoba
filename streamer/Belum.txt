@@ -3,3 +3,7 @@ v1
 - perhatikan relasi
 - test api
 - tamabahkan fitur
+
+v2
+- Ini masih moba
+- gimana game valo

@@ -6,10 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CreateMatchRequest extends FormRequest
 {
+    public function authorize(): bool
+    {
+        return true;
+    }
     public function rules()
     {
         return [
-
             'season_id' => 'required|exists:seasons,id',
             'players' => 'required|array|min:1|max:10',
             'players.*.player_id' => [

@@ -34,6 +34,7 @@ class AuthController extends Controller
             return $this->error($e->getMessage(), 400);
         }
     }
+    
     public function login(LoginRequest $request): JsonResponse
     {
         try {
