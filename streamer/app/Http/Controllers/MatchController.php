@@ -38,17 +38,10 @@ class MatchController extends Controller
             );
 
             $match = $this->matchService->createMatch($dto);
-
-            return response()->json([
-                'message' => 'Match created successfully',
-                'data' => $match
-            ], 201);
+            return $this->created($match, 'Match created successfully');
 
         } catch (Exception $e) {
-
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 400);
+            return $this->error($e->getMessage(), 400);
         }
     }
 
@@ -56,23 +49,13 @@ class MatchController extends Controller
     {
         try {
             $match = $this->matchService->getMatch($id);
-
             if (!$match) {
-                return response()->json([
-                    'message' => 'Match not found'
-                ], 404);
+                return $this->error('Match not found', 404);
             }
             $this->authorize('view', $match);
-
-            return response()->json([
-                'data' => $match
-            ], 200);
-
+            return $this->success($match, 'Match retrieved successfully');
         } catch (Exception $e) {
-
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 400);
+            return $this->error($e->getMessage(), 400);
         }
     }
 }

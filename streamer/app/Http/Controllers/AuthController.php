@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\DTO\CreateUserDTO;
@@ -28,36 +29,21 @@ class AuthController extends Controller
 
             $user = $this->authService->register($dto);
 
-            return response()->json([
-                'message' => 'User registered successfully',
-                'data' => $user
-            ], 201);
-
+            return $this->created($user, 'User registered successfully');
         } catch (Exception $e) {
-
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 400);
+            return $this->error($e->getMessage(), 400);
         }
     }
-        public function login(LoginRequest $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
         try {
             $user = $this->authService->login(
                 $request->input('email'),
                 $request->input('password')
             );
-
-            return response()->json([
-                'message' => 'User logged in successfully',
-                'data' => $user
-            ], 200);
-
+            return $this->success($user, 'User logged in successfully');
         } catch (Exception $e) {
-
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 400);
+            return $this->error($e->getMessage(), 400);
         }
     }
 
@@ -65,16 +51,9 @@ class AuthController extends Controller
     {
         try {
             $this->authService->logout();
-
-            return response()->json([
-                'message' => 'User logged out successfully'
-            ], 200);
-
+            return $this->success(null, 'User logged out successfully');
         } catch (Exception $e) {
-
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 400);
+            return $this->error($e->getMessage(), 400);
         }
     }
 }

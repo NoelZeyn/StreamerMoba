@@ -19,11 +19,12 @@ class MatchPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Matchs $match): bool
+    public function view(User $user, Matchs $match): Response
     {
-        return $match->user_id === $user->id;
+        return $match->user_id === $user->id
+            ? Response::allow()
+            : Response::deny('You do not own this match');
     }
-    
     /**
      * Determine whether the user can create models.
      */
@@ -37,7 +38,7 @@ class MatchPolicy
      */
     public function update(User $user, Matchs $matchs): bool
     {
-        return false;
+        return $matchs->user_id === $user->id;
     }
 
     /**
@@ -45,7 +46,7 @@ class MatchPolicy
      */
     public function delete(User $user, Matchs $matchs): bool
     {
-        return false;
+        return $matchs->user_id === $user->id;
     }
 
     /**

@@ -26,14 +26,9 @@ class PlayerController extends Controller
         try {
             $this->authorize('view', Player::class);
             $players = $this->playerService->list();
-
-            return response()->json([
-                'data' => $players
-            ]);
+            return $this->success($players, 'Players retrieved successfully');
         } catch (\Throwable $th) {
-            return response()->json([
-                'message' => $th->getMessage()
-            ], 400);
+            return $this->error($th->getMessage(), 400);
         }
     }
 
@@ -56,10 +51,7 @@ class PlayerController extends Controller
                 'data' => $player
             ], 201);
         } catch (Exception $e) {
-
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 400);
+            return $this->error($e->getMessage(), 400);
         }
     }
 
@@ -79,14 +71,9 @@ class PlayerController extends Controller
 
             $this->authorize('view', $player);
 
-            return response()->json([
-                'data' => $player
-            ]);
+            return $this->success($player, 'Player retrieved successfully');
         } catch (Exception $e) {
-
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 400);
+            return $this->error($e->getMessage(), 400);
         }
     }
     
@@ -97,21 +84,12 @@ class PlayerController extends Controller
     public function destroy(int $id): JsonResponse
     {
         try {
-
             $player = $this->playerService->find($id);
-
             $this->authorize('delete', $player);
-
             $this->playerService->delete($id);
-
-            return response()->json([
-                'message' => 'Player deleted'
-            ]);
+            return $this->success(null, 'Player deleted successfully');
         } catch (Exception $e) {
-
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 400);
+            return $this->error($e->getMessage(), 400);
         }
     }
 }
