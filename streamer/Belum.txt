@@ -1,9 +1,12 @@
 v1
-- tambahkan policy
-- perhatikan relasi
-- test api
-- tamabahkan fitur
+- Add more policies
+- Relation
+- test all of the API's
+- Add more feature
 
 v2
 - Ini masih moba
 - gimana game valo
+
+v3
+- Captcha implementation
