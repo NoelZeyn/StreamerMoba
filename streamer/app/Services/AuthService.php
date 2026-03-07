@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Repositories\UserRepository;
@@ -7,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Exception;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthService
 {
@@ -14,7 +16,21 @@ class AuthService
         protected UserRepository $userRepository
     ) {}
 
-    public function register(CreateUserDTO $dto)
+    // public function register(CreateUserDTO $dto)
+    // {
+    //     return DB::transaction(function () use ($dto) {
+
+    //         $user = $this->userRepository->create([
+    //             'name' => $dto->name,
+    //             'email' => $dto->email,
+    //             'channel_name' => $dto->channel_name,
+    //             'password' => Hash::make($dto->password)
+    //         ]);
+    //         Auth::login($user);
+    //         return $user;
+    //     });
+    // }
+    public function register(CreateUserDTO $dto): array
     {
         return DB::transaction(function () use ($dto) {
 
@@ -25,27 +41,27 @@ class AuthService
                 'password' => Hash::make($dto->password)
             ]);
 
-            Auth::login($user);
+            // $token = JWTAuth::fromUser($user);
 
-            return $user;
+            return [
+                'user' => $user,
+                // 'token' => $token
+            ];
         });
     }
-
-    public function login(string $email, string $password)
+    public function login(string $email, string $password): string
     {
-        $user = $this->userRepository->findByEmail($email);
-
-        if (!$user || !Hash::check($password, $user->password)) {
-            throw new Exception('Invalid credentials');
+        if (!$token = JWTAuth::attempt([
+            'email' => $email,
+            'password' => $password
+        ])) {
+            throw new Exception('Invalid credentials', 401);
         }
-
-        Auth::login($user);
-
-        return $user;
+        return $token;
     }
 
-    public function logout()
+    public function logout(): void
     {
-        Auth::logout();
+        JWTAuth::invalidate(JWTAuth::getToken());
     }
 }
