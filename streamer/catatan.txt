@@ -1,0 +1,3 @@
+aku selalu lupa lockforupdate
+composer require mews/captcha
+php artisan vendor:publish --provider="Mews\Captcha\CaptchaServiceProvider"

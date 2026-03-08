@@ -17,6 +17,8 @@
     "dependencies": {
         "@vitejs/plugin-vue": "^6.0.4",
         "vue": "^3.5.29",
-        "vue-router": "^4.6.4"
+        "vue-recaptcha": "^3.0.0-alpha.6",
+        "vue-router": "^4.6.4",
+        "vue3-recaptcha-v2": "^2.1.0"
     }
 }
