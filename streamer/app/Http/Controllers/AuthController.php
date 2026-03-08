@@ -16,6 +16,14 @@ class AuthController extends Controller
     public function __construct(
         protected AuthService $authService
     ) {}
+    public function validateCaptcha(string $captchaInput): bool
+    {
+        $captchaStored = Cache::get(
+            'captcha_' . request()->ip()
+        );
+
+        return $captchaStored && $captchaInput == $captchaStored;
+    }
 
     public function register(RegisterRequest $request): JsonResponse
     {
@@ -30,8 +38,13 @@ class AuthController extends Controller
             ], 429);
         }
 
-        try {
+        if (!$this->validateCaptcha($request->captcha)) {
+            return response()->json([
+                'message' => 'Captcha is invalid'
+            ], 422);
+        }
 
+        try {
             $dto = new CreateUserDTO(
                 $request->name,
                 $request->email,
@@ -75,7 +88,6 @@ class AuthController extends Controller
         $key = 'login:' . $request->email . '|' . $request->ip();
 
         if (RateLimiter::tooManyAttempts($key, 5)) {
-
             $seconds = RateLimiter::availableIn($key);
 
             return response()->json([
@@ -83,16 +95,9 @@ class AuthController extends Controller
             ], 429);
         }
 
-        $captchaInput = $request->captcha;
-
-        $captchaStored = Cache::get(
-            'captcha_' . $request->ip()
-        );
-
-        if (!$captchaStored || $captchaInput != $captchaStored) {
-
+        if (!$this->validateCaptcha($request->captcha)) {
             return response()->json([
-                'message' => 'Captcha salah'
+                'message' => 'Captcha is invalid'
             ], 422);
         }
 
