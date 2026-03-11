@@ -14,12 +14,15 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
 
             $table->id();
-
+            $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
+                
             $table->foreignId('player_id')
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->integer('plays_added');
+            $table->integer('quantity');
 
             $table->integer('price');
 

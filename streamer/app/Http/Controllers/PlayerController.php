@@ -38,18 +38,14 @@ class PlayerController extends Controller
     public function store(CreatePlayerRequest $request): JsonResponse
     {
         try {
-
+            $validated = $request->validated();
             $dto = new CreatePlayerDTO(
-                $request->input('name'),
-                $request->input('type')
+                $validated['name'],
+                $validated['type']
             );
 
             $player = $this->playerService->create($dto);
-
-            return response()->json([
-                'message' => 'Player created successfully',
-                'data' => $player
-            ], 201);
+            return $this->success($player, 'Player created successfully');
         } catch (Exception $e) {
             return $this->error($e->getMessage(), 400);
         }

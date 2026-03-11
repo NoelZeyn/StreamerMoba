@@ -18,4 +18,15 @@ class CreatePlayerRequest extends FormRequest
             'type' => 'required|in:VIP,PUBLIC'
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Player name is required',
+            'name.string' => 'Player name must be a string',
+            'name.max' => 'Player name cannot exceed 100 characters',
+            'type.required' => 'Player type is required',
+            'type.in' => 'Player type must be either VIP or PUBLIC'
+        ];
+    }
 }

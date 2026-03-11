@@ -59,7 +59,7 @@
             <div class="relative group">
               <span
                 class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-blue-600 transition-colors">
-                👤
+                <img src="@/assets/email.svg" class="w-5 h-5" />
               </span>
 
               <input v-model="form.email" type="email" required placeholder="email@perusahaan.com" class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl
@@ -83,7 +83,7 @@
             <div class="relative group">
               <span
                 class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-blue-600 transition-colors">
-                🔒
+                <img src="@/assets/password.svg" class="w-5 h-5" />
               </span>
 
               <input v-model="form.password" :type="showPassword ? 'text' : 'password'" required placeholder="••••••••"
@@ -105,11 +105,11 @@
             <div
               class="flex items-center justify-between mb-2 bg-white p-2 rounded-lg border border-gray-100 shadow-sm">
 
-              <div v-html="captchaImage" class="flex-grow flex justify-center scale-90">
+              <div v-html="captchaImage" class="flex-grow flex justify-center scale-90 hover:scale-120 transition-transform duration-1000 ">
               </div>
 
               <button @click="loadCaptcha" type="button"
-                class="text-blue-600 hover:rotate-180 transition-transform duration-500">
+                class="text-blue-600 cursor-pointer transition-transform duration-500">
                 🔄
               </button>
             </div>

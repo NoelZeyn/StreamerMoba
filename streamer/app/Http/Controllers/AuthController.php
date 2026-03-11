@@ -45,32 +45,26 @@ class AuthController extends Controller
         }
 
         try {
+            $validated = $request->validated();
             $dto = new CreateUserDTO(
-                $request->name,
-                $request->email,
-                $request->password,
-                $request->channel_name
+                $validated['name'],
+                $validated['email'],
+                $validated['password'],
+                $validated['channel_name']
             );
 
             $user = $this->authService->register($dto);
 
             RateLimiter::hit($key, 600);
-
-            return response()->json([
-                'message' => 'User registered successfully',
-                'data' => $user
-            ], 201);
+            return $this->success($user, 'User registered successfully');
         } catch (Exception $e) {
-
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 400);
+            return $this->error($e->getMessage(), 400);
         }
     }
 
     public function captcha(): JsonResponse
     {
-        $code = rand(100, 999);
+        $code = rand(10000, 99999);
 
         Cache::put(
             'captcha_' . request()->ip(),
