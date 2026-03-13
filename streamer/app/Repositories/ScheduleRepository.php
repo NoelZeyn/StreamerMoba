@@ -19,15 +19,23 @@ class ScheduleRepository
 
     public function findWithMatches(int $scheduleId): Schedule
     {
-        return Schedule::with('matches.players')->findOrFail($scheduleId);
+        return $schedule = Schedule::with([
+            'matches.user:id,name',
+            'matches.players.player:id,name', // Schedule -> Matches -> MatchPlayer -> Player
+            'matches.players.hero:id,name',   // Jika ingin ambil nama Hero juga
+            'matches.players.role:id,name'    // Jika ingin ambil nama Role juga
+        ])->findOrFail($scheduleId);
     }
 
-    public function listByUser(int $userId)
+    public function listByUser(int $userId, int $perPage = 10)
     {
-        return Schedule::with('matches.players')
+        return Schedule::query()
+            // Hanya ambil kolom yang dibutuhkan untuk list dashboard
+            ->select(['id', 'user_id', 'title', 'start_time', 'status'])
             ->where('user_id', $userId)
             ->latest()
-            ->get();
+            // simplePaginate jauh lebih cepat untuk data besar dibanding paginate() atau get()
+            ->simplePaginate($perPage);
     }
 
     public function update(Schedule $schedule, array $data): Schedule

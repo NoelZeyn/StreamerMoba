@@ -44,15 +44,9 @@ class DatabaseSeeder extends Seeder
                 'channel_name' => "Channel_Gaming_$i",
             ]);
         }
-        User::create([
-            'name' => "Admin $i",
-            'email' => "admin$i@example.com",
-            'password' => Hash::make('password'),
-            'channel_name' => "Channel_Gaming_$i",
-        ]);
         $users = User::all();
 
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 500; $i++) {
             Season::create([
                 'name' => "Season $i",
                 'start_date' => Carbon::now()->subMonths(20 - $i),
@@ -63,7 +57,7 @@ class DatabaseSeeder extends Seeder
         $seasons = Season::all();
 
         $types = ['VIP', 'PUBLIC', 'STREAMER'];
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 500; $i++) {
             $type = $types[array_rand($types)];
             $player = Player::create([
                 'user_id' => ($type == 'STREAMER') ? $users->random()->id : null,
@@ -80,7 +74,7 @@ class DatabaseSeeder extends Seeder
         }
         $players = Player::all();
 
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 500; $i++) {
             Transaction::create([
                 'user_id' => $users->random()->id,
                 'player_id' => $players->where('type', 'VIP')->random()->id,
@@ -95,23 +89,29 @@ class DatabaseSeeder extends Seeder
             'channel_name' => "Channel_Gaming_21",
         ]);
         $statuses = ['scheduled', 'live', 'finished', 'cancelled'];
-        for ($i = 1; $i <= 20; $i++) {
+
+        for ($i = 1; $i <= 5; $i++) {
+
+            $status = $statuses[array_rand($statuses)];
+
             Schedule::create([
-                // 'user_id' => $users->random()->id,
-                'user_id' => 22,
+                'user_id' => 21,
                 'title' => "Live Stream Session $i",
                 'start_time' => Carbon::now()->addDays($i),
-                'status' => $statuses[array_rand($statuses)],
+                'status' => $status,
                 'notes' => "Note for stream $i",
+                'end_time' => $status === 'finished'
+                    ? Carbon::now()->addDays($i)->addHours(3)
+                    : null,
             ]);
         }
         $schedules = Schedule::all();
 
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 500; $i++) {
             Matchs::create([
                 'user_id' => $users->random()->id,
                 'season_id' => $seasons->random()->id,
-                'schedule_id' => $schedules->random()->id,
+                'schedule_id' => $schedules->whereIn('status', ['live', 'finished'])->random()->id,
                 'played_at' => Carbon::now()->subDays(rand(1, 30)),
             ]);
         };

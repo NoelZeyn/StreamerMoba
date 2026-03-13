@@ -9,4 +9,10 @@ v2
 - gimana game valo
 
 v3
-- Captcha implementation
+- Captcha implementation v
+
+v4
+- queue
+- dashboard schedules
+- dashboard matchs
+- dashboard players
