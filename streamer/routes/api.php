@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MatchController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Container\Attributes\Auth;
 
@@ -28,5 +29,13 @@ Route::prefix('v1')->group(function () {
         Route::get('/transactions', [TransactionController::class, 'index']);
         Route::get('/transactions/{id}', [TransactionController::class, 'show']);
         Route::delete('/transactions/{id}', [TransactionController::class, 'destroy']);
+    });
+
+    Route::middleware('auth:api')->group(function () {
+        Route::post('/schedules', [ScheduleController::class, 'store']);
+        Route::get('/schedules', [ScheduleController::class, 'index']);
+        Route::get('/schedules/{id}', [ScheduleController::class, 'show']);
+        Route::put('/schedules/{id}', [ScheduleController::class, 'update']);
+        Route::delete('/schedules/{id}', [ScheduleController::class, 'destroy']);
     });
 });

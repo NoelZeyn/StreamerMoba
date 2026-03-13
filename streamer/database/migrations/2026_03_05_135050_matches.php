@@ -23,6 +23,11 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
+            $table->foreignId('schedule_id')
+                ->nullable()
+                ->constrained('stream_schedules')
+                ->nullOnDelete();
+
             $table->timestamp('played_at');
 
             $table->timestamps();

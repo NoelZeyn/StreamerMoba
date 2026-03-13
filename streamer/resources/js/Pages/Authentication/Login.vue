@@ -2,13 +2,13 @@
   <div class="fixed inset-0 w-full flex flex-col md:flex-row bg-[#1e60ff] font-sans overflow-hidden">
 
     <div class="hidden md:flex md:w-1/2 relative overflow-hidden h-full">
-      <img :src="mosqueBackground" class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-20" />
+      <img :src="Background" class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-20" />
 
       <div class="relative z-10 p-10 lg:p-14 flex flex-col justify-between text-white w-full h-full">
 
         <div class="flex items-center gap-4">
           <div class="bg-white/10 p-2 rounded-xl backdrop-blur-sm border border-white/20">
-            <img :src="logoImage" class="w-8 h-8 brightness-0 invert" />
+            <img :src="Background" class="w-8 h-8 brightness-0 invert" />
           </div>
           <span class="text-xl font-bold tracking-wider uppercase">Sistem Stream</span>
         </div>
@@ -142,8 +142,7 @@
   </div>
 </template>
 <script>
-import mosqueBackground from "@/assets/PLN.svg";
-import logoImage from "@/assets/PLN.svg";
+import Background from "@/assets/PLN.svg";
 import axios from "axios";
 
 export default {
@@ -156,8 +155,7 @@ export default {
       isLoading: false,
       message: "",
       messageClass: "",
-      mosqueBackground,
-      logoImage
+      Background,
     }
   },
   mounted() {

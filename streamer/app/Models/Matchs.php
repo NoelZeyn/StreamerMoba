@@ -11,6 +11,7 @@ class Matchs extends Model
     protected $fillable = [
         'user_id',
         'season_id',
+        'schedule_id',
         'played_at'
     ];
 
@@ -23,6 +24,12 @@ class Matchs extends Model
     {
         return $this->belongsTo(Season::class);
     }
+
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class);
+    }
+
 
     public function user()
     {

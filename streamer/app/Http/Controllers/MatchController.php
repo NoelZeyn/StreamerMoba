@@ -33,7 +33,9 @@ class MatchController extends Controller
                 ->toArray();
 
             $dto = new CreateMatchDTO(
+                $request->input('user_id'),
                 $request->input('season_id'),
+                $request->input('schedule_id'),
                 $players
             );
 

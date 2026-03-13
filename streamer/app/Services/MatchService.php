@@ -25,6 +25,7 @@ class MatchService
             $match = $this->matchRepository->create([
                 'user_id' => Auth::id(),
                 'season_id' => $dto->season_id,
+                'schedule_id' => $dto->schedule_id,
                 'played_at' => now()
             ]);
 
