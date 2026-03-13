@@ -17,6 +17,7 @@ use App\Models\Matchs;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -42,6 +43,7 @@ class DatabaseSeeder extends Seeder
                 'email' => "admin$i@example.com",
                 'password' => Hash::make('password'),
                 'channel_name' => "Channel_Gaming_$i",
+                'webhook_token' => hash('sha256', Str::uuid() . Str::random(10))
             ]);
         }
         $users = User::all();
@@ -87,10 +89,11 @@ class DatabaseSeeder extends Seeder
             'email' => "ahmad@test.com",
             'password' => Hash::make('password123'),
             'channel_name' => "Channel_Gaming_21",
+            'webhook_token' => hash('sha256', Str::uuid() . Str::random(10))
         ]);
         $statuses = ['scheduled', 'live', 'finished', 'cancelled'];
 
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 50; $i++) {
 
             $status = $statuses[array_rand($statuses)];
 

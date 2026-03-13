@@ -22,15 +22,23 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'channel_name'
+        'channel_name',
+        'webhook_token'
     ];
 
-    public function matches() {
+    public function matches()
+    {
         return $this->hasMany(Matchs::class);
     }
 
-    public function players() {
+    public function players()
+    {
         return $this->hasMany(Player::class);
+    }
+    
+    public function donations()
+    {
+        return $this->hasMany(Donation::class);
     }
 
     /**

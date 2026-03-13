@@ -19,7 +19,7 @@
       <div class="p-6 mb-2">
         <div class="flex items-center gap-3 px-2">
           <div class="bg-blue-600 p-1.5 rounded-lg shadow-blue-200 shadow-lg">
-            <img :src="Logo" alt="Logo" class="w-6 h-6 brightness-0 invert" />
+           
           </div>
           <div class="flex flex-col">
             <span class="text-sm font-black text-gray-900 leading-none tracking-tight uppercase">Sistem Stream</span>

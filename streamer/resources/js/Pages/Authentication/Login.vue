@@ -2,7 +2,7 @@
   <div class="fixed inset-0 w-full flex flex-col md:flex-row bg-[#1e60ff] font-sans overflow-hidden">
 
     <div class="hidden md:flex md:w-1/2 relative overflow-hidden h-full">
-      <img :src="Background" class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-20" />
+      <img  class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-20" />
 
       <div class="relative z-10 p-10 lg:p-14 flex flex-col justify-between text-white w-full h-full">
 

@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Exception;
+use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
-
 class AuthService
 {
     public function __construct(
@@ -38,7 +38,8 @@ class AuthService
                 'name' => $dto->name,
                 'email' => $dto->email,
                 'channel_name' => $dto->channel_name,
-                'password' => Hash::make($dto->password)
+                'password' => Hash::make($dto->password),
+                'webhook_token' => hash('sha256', Str::uuid() . Str::random(10))
             ]);
 
             // $token = JWTAuth::fromUser($user);

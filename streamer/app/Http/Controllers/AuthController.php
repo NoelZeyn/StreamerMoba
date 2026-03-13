@@ -50,7 +50,8 @@ class AuthController extends Controller
                 $validated['name'],
                 $validated['email'],
                 $validated['password'],
-                $validated['channel_name']
+                $validated['channel_name'],
+                $validated['webhook_token']
             );
 
             $user = $this->authService->register($dto);

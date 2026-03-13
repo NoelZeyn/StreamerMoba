@@ -19,7 +19,8 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8',
-            'channel_name' => 'nullable|string|max:100|unique:users'
+            'channel_name' => 'nullable|string|max:100|unique:users',
+            'webhook_token' => 'nullable|string|max:255|unique:users'
         ];
     }
 

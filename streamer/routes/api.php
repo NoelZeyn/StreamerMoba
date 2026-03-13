@@ -4,12 +4,15 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MatchController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\SaweriaController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Container\Attributes\Auth;
 
 Route::get('/captcha', [AuthController::class, 'captcha']);
 Route::prefix('v1')->group(function () {
+    Route::post('/webhook/saweria/{token}', [SaweriaController::class, 'handle']);
+    
 
     // auth
     Route::post('/register', [AuthController::class, 'register']);
@@ -37,5 +40,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/schedules/{id}', [ScheduleController::class, 'show']);
         Route::put('/schedules/{id}', [ScheduleController::class, 'update']);
         Route::delete('/schedules/{id}', [ScheduleController::class, 'destroy']);
+        Route::post('/schedules/{id}/finish', [ScheduleController::class, 'finish']);
+        Route::post('/schedules/{id}/cancel', [ScheduleController::class, 'cancel']);
+        Route::post('/schedules/{id}/start', [ScheduleController::class, 'start']); 
+        Route::post('/schedules/{id}/reopen', [ScheduleController::class, 'reopen']);
     });
 });

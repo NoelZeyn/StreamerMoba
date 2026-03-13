@@ -27,16 +27,20 @@ class ScheduleRepository
         ])->findOrFail($scheduleId);
     }
 
-    public function listByUser(int $userId, int $perPage = 10)
-    {
-        return Schedule::query()
-            // Hanya ambil kolom yang dibutuhkan untuk list dashboard
-            ->select(['id', 'user_id', 'title', 'start_time', 'status'])
-            ->where('user_id', $userId)
-            ->latest()
-            // simplePaginate jauh lebih cepat untuk data besar dibanding paginate() atau get()
-            ->simplePaginate($perPage);
-    }
+public function listByUser(int $userId, int $perPage = 10)
+{
+    return Schedule::query()
+        ->select([
+            'id',
+            'user_id',
+            'title',
+            'start_time',
+            'status'
+        ])
+        ->where('user_id', $userId)
+        ->orderByDesc('start_time')
+        ->paginate($perPage);
+}
 
     public function update(Schedule $schedule, array $data): Schedule
     {
@@ -52,5 +56,37 @@ class ScheduleRepository
     public function findOrFail(int $scheduleId): Schedule
     {
         return Schedule::findOrFail($scheduleId);
+    }
+
+    public function markAsFinished(Schedule $schedule): Schedule
+    {
+        $schedule->status = 'finished';
+        $schedule->end_time = now();
+        $schedule->save();
+        return $schedule;
+    }
+
+    public function markAsCancelled(Schedule $schedule): Schedule
+    {
+        $schedule->status = 'cancelled';
+        $schedule->end_time = now();
+        $schedule->save();
+        return $schedule;
+    }
+
+    public function markAsStarted(Schedule $schedule): Schedule
+    {
+        $schedule->status = 'live';
+        $schedule->save();
+        return $schedule;
+    }
+
+    public function markAsReopened(Schedule $schedule): Schedule
+    {
+        $schedule->status = 'scheduled';
+        $schedule->end_time = null;
+        $schedule->save();
+
+        return $schedule;
     }
 }

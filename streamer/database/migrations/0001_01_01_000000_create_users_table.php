@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('channel_name')->nullable();
             $table->string('remember_token')->nullable();
+            $table->string('webhook_token')->unique()->nullable();
             $table->timestamps();
         });
 

@@ -83,27 +83,24 @@
                         </div>
                       </td> -->
                       <td class="px-4 py-6">
-<div class="grid grid-cols-5 gap-2">
-  <div
-    v-for="mp in match.players"
-    :key="mp.id"
-    class="flex flex-col border border-gray-100 rounded p-2 bg-white shadow-sm text-center"
-  >
-    <span class="text-[10px] font-bold text-gray-800 truncate">
-      {{ mp.player?.name || 'Unknown' }}
-    </span>
+                        <div class="grid grid-cols-5 gap-2">
+                          <div v-for="mp in match.players" :key="mp.id"
+                            class="flex flex-col border border-gray-100 rounded p-2 bg-white shadow-sm text-center">
+                            <span class="text-[10px] font-bold text-gray-800 truncate">
+                              {{ mp.player?.name || 'Unknown' }}
+                            </span>
 
-    <div class="flex justify-center gap-1 mt-1">
-      <span class="text-[8px] bg-purple-50 text-purple-600 px-1 rounded uppercase font-bold">
-        {{ mp.hero?.name || 'Hero' }}
-      </span>
+                            <div class="flex justify-center gap-1 mt-1">
+                              <span class="text-[8px] bg-purple-50 text-purple-600 px-1 rounded uppercase font-bold">
+                                {{ mp.hero?.name || 'Hero' }}
+                              </span>
 
-      <span class="text-[8px] bg-orange-50 text-orange-600 px-1 rounded uppercase font-bold">
-        {{ mp.role?.name || 'Role' }}
-      </span>
-    </div>
-  </div>
-</div>
+                              <span class="text-[8px] bg-orange-50 text-orange-600 px-1 rounded uppercase font-bold">
+                                {{ mp.role?.name || 'Role' }}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
                       </td>
                       <td class="px-4 py-6 text-[11px] text-gray-600 font-medium">
                         {{ match.played_at }}
@@ -135,17 +132,73 @@
             </div>
           </div>
 
-          <div class="space-y-6">
-            <div class="bg-gray-900 p-6 rounded-2xl text-white shadow-xl relative overflow-hidden">
-              <h3 class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-6">Summary Stats</h3>
-              <div class="space-y-4">
-                <div class="flex justify-between items-end border-b border-white/10 pb-2">
-                  <span class="text-xs text-gray-400">Total Match</span>
-                  <span class="text-2xl font-black">{{ schedule.matches.length }}</span>
+          <div>
+
+            <div class="space-y-6">
+              <div class="bg-gray-900 p-6 rounded-2xl text-white shadow-xl relative overflow-hidden">
+                <h3 class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-6">Summary Stats</h3>
+                <div class="space-y-4">
+                  <div class="flex justify-between items-end border-b border-white/10 pb-2">
+                    <span class="text-xs text-gray-400">Total Match</span>
+                    <span class="text-2xl font-black">{{ schedule.matches.length }}</span>
+                  </div>
+                  <div class="flex justify-between items-end border-b border-white/10 pb-2">
+                    <span class="text-xs text-gray-400">Avg. Player</span>
+                    <span class="text-2xl font-black text-blue-400">{{ calculateAvgPlayers(schedule.matches) }}</span>
+                  </div>
                 </div>
-                <div class="flex justify-between items-end border-b border-white/10 pb-2">
-                  <span class="text-xs text-gray-400">Avg. Player</span>
-                  <span class="text-2xl font-black text-blue-400">{{ calculateAvgPlayers(schedule.matches) }}</span>
+              </div>
+            </div>
+
+            <div class="space-y-10 mt-10">
+              <div class="bg-gray-900 p-6 rounded-2xl text-white shadow-xl relative overflow-hidden">
+                <h3 class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-6">Shortcuts</h3>
+                <div class="grid grid-cols-2 gap-3">
+
+                  <!-- NEW MATCH -->
+                  <router-link to="/matches/create"
+                    class="bg-white/5 hover:bg-white/10 p-4 rounded-xl text-center border border-white/10 transition-all group">
+                    <i class="fas fa-plus-circle mb-2 block text-blue-400 group-hover:scale-110 transition"></i>
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-blue-300">
+                      New Match
+                    </p>
+                  </router-link>
+
+                  <!-- START STREAM -->
+                  <button v-if="schedule.status === 'scheduled'" @click="startStream"
+                    class="bg-white/5 hover:bg-emerald-500/20 p-4 rounded-xl text-center border border-white/10 transition-all active:scale-95 group cursor-pointer">
+                    <i class="fas fa-play-circle mb-2 block text-emerald-400 group-hover:scale-110 transition"></i>
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-emerald-300">
+                      Start
+                    </p>
+                  </button>
+
+                  <!-- FINISH STREAM -->
+                  <button v-if="schedule.status === 'live'" @click="finishStream"
+                    class="bg-white/5 hover:bg-purple-500/20 p-4 rounded-xl text-center border border-white/10 transition-all active:scale-95 group cursor-pointer">
+                    <i class="fas fa-flag-checkered mb-2 block text-purple-400 group-hover:scale-110 transition"></i>
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-purple-300">
+                      Finish
+                    </p>
+                  </button>
+
+                  <!-- CANCEL STREAM -->
+                  <button v-if="schedule.status === 'scheduled'" @click="cancelStream"
+                    class="bg-white/5 hover:bg-red-500/20 p-4 rounded-xl text-center border border-white/10 transition-all active:scale-95 group cursor-pointer">
+                    <i class="fas fa-times-circle mb-2 block text-red-400 group-hover:scale-110 transition"></i>
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-red-300">
+                      Cancel
+                    </p>
+                  </button>
+
+                  <!-- REOPEN STREAM -->
+                  <button v-if="schedule.status === 'cancelled'" @click="reopenStream"
+                    class="bg-white/5 hover:bg-yellow-500/20 p-4 rounded-xl text-center border border-white/10 transition-all active:scale-95 group cursor-pointer">
+                    <i class="fas fa-undo mb-2 block text-yellow-400 group-hover:scale-110 transition"></i>
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-yellow-300">
+                      Reopen
+                    </p>
+                  </button>
                 </div>
               </div>
             </div>
@@ -177,17 +230,10 @@ export default {
     },
     paginatedMatches() {
       if (!this.schedule || !this.schedule.matches) return [];
-
-      // 1. Salin array agar tidak mengubah data asli (immutability)
       const matches = [...this.schedule.matches];
-
-      // 2. Urutkan berdasarkan tanggal terbaru (descending)
-      // Mengasumsikan format 'played_at' bisa dibaca oleh Date()
       matches.sort((a, b) => {
         return new Date(b.played_at) - new Date(a.played_at);
       });
-
-      // 3. Lakukan paginasi setelah diurutkan
       const start = (this.currentPage - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
 
@@ -210,6 +256,50 @@ export default {
         this.loading = false;
       }
     },
+    async finishStream() {
+      if (!this.schedule) return;
+
+      try {
+        await axios.post(`/api/v1/schedules/${this.schedule.id}/finish`);
+        this.fetchScheduleDetail();
+      } catch (error) {
+        console.error("Error finishing stream:", error);
+      }
+    },
+
+    async reopenStream() {
+      if (!this.schedule) return;
+
+      try {
+        await axios.post(`/api/v1/schedules/${this.schedule.id}/reopen`);
+        this.fetchScheduleDetail();
+      } catch (error) {
+        console.error("Error reopening stream:", error);
+      }
+    },
+
+    async startStream() {
+      if (!this.schedule) return;
+
+      try {
+        await axios.post(`/api/v1/schedules/${this.schedule.id}/start`);
+        this.fetchScheduleDetail();
+      } catch (error) {
+        console.error("Error starting stream:", error);
+      }
+    },
+
+    async cancelStream() {
+      if (!this.schedule) return;
+
+      try {
+        await axios.post(`/api/v1/schedules/${this.schedule.id}/cancel`);
+        this.fetchScheduleDetail();
+      } catch (error) {
+        console.error("Error cancelling stream:", error);
+      }
+    },
+
     formatFullDate(dateStr) {
       if (!dateStr) return '-';
       return new Date(dateStr).toLocaleString('id-ID', {
@@ -257,7 +347,6 @@ export default {
   border-radius: 10px;
 }
 
-/* Memastikan tabel enak dilihat saat mode scroll horizontal */
 table {
   min-width: 700px;
 }

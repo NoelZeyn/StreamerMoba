@@ -89,4 +89,43 @@ class ScheduleController extends Controller
             return $this->error($th->getMessage(), 400);
         }
     }
+
+    public function finish(int $id)
+    {
+        try {
+            $this->scheduleService->finishSchedule($id);
+            return $this->success(null, 'Schedule marked as finished');
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage(), 400);
+        }
+    }
+
+    public function cancel(int $id)
+    {
+        try {
+            $this->scheduleService->cancelSchedule($id);
+            return $this->success(null, 'Schedule marked as cancelled');
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage(), 400);
+        }
+    }
+
+    public function start(int $id)
+    {
+        try {
+            $this->scheduleService->startSchedule($id);
+            return $this->success(null, 'Schedule marked as started');
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage(), 400);
+        }
+    }
+
+    public function reopen(int $id) {
+        try {
+            $this->scheduleService->reopenSchedule($id);
+            return $this->success(null, 'Schedule marked as reopened');
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage(), 400);
+        }
+    }
 }
