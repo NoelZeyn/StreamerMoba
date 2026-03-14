@@ -3,7 +3,7 @@
     <Sidebar :activeMenu="'dashboard'" />
 
     <main class="flex-1 min-w-0 flex flex-col overflow-hidden">
-      
+
       <header class="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between shrink-0">
         <div>
           <h1 class="text-xl font-bold text-gray-900">Ringkasan Statistik</h1>
@@ -32,8 +32,7 @@
                 <i :class="[stat.icon, stat.iconColor]" class="text-xl"></i>
               </div>
 
-              <span :class="stat.trendColor"
-                class="text-[10px] font-bold px-2 py-1 rounded-full bg-opacity-10">
+              <span :class="stat.trendColor" class="text-[10px] font-bold px-2 py-1 rounded-full bg-opacity-10">
                 {{ stat.trend }}
               </span>
             </div>
@@ -67,15 +66,13 @@
 
                 <div class="flex items-center gap-2">
 
-                  <button
-                    @click="fetchSchedules(pagination.prev_page_url)"
+                  <button @click="fetchSchedules(pagination.prev_page_url)"
                     :disabled="!pagination.prev_page_url || loading"
                     class="p-2 bg-gray-50 rounded-lg hover:bg-blue-50 disabled:opacity-30 transition-colors border border-gray-100">
                     <i class="fas fa-chevron-left text-xs text-gray-600"></i>
                   </button>
 
-                  <button
-                    @click="fetchSchedules(pagination.next_page_url)"
+                  <button @click="fetchSchedules(pagination.next_page_url)"
                     :disabled="!pagination.next_page_url || loading"
                     class="p-2 bg-gray-50 rounded-lg hover:bg-blue-50 disabled:opacity-30 transition-colors border border-gray-100">
                     <i class="fas fa-chevron-right text-xs text-gray-600"></i>
@@ -129,15 +126,13 @@
 
                       <span class="h-1 w-1 bg-gray-300 rounded-full"></span>
 
-                      <span :class="statusClass(item.status)"
-                        class="font-black uppercase tracking-tighter text-[9px]">
+                      <span :class="statusClass(item.status)" class="font-black uppercase tracking-tighter text-[9px]">
                         {{ item.status }}
                       </span>
                     </div>
                   </div>
 
-                  <router-link
-                    :to="`/schedules/${item.id}`"
+                  <router-link :to="`/schedules/${item.id}`"
                     class="opacity-0 group-hover:opacity-100 bg-blue-600 text-white text-[10px] font-bold px-4 py-2 rounded-lg transition-all shadow-lg shadow-blue-100">
                     MANAGE
                   </router-link>
@@ -158,18 +153,14 @@
 
                 <div class="flex items-center gap-2">
 
-                  <button
-                    @click="fetchSchedules(`/api/v1/schedules?page=${pagination.current_page-1}`)"
+                  <button @click="fetchSchedules(`/api/v1/schedules?page=${pagination.current_page - 1}`)"
                     :disabled="pagination.current_page === 1"
                     class="px-3 py-1 text-xs font-bold border rounded-lg disabled:opacity-30 hover:bg-gray-50">
                     Prev
                   </button>
 
-                  <button
-                    v-for="page in pagination.last_page"
-                    :key="page"
-                    @click="fetchSchedules(`/api/v1/schedules?page=${page}`)"
-                    :class="[
+                  <button v-for="page in pagination.last_page" :key="page"
+                    @click="fetchSchedules(`/api/v1/schedules?page=${page}`)" :class="[
                       'px-3 py-1 text-xs font-bold rounded-lg border',
                       page === pagination.current_page
                         ? 'bg-blue-600 text-white border-blue-600'
@@ -178,8 +169,7 @@
                     {{ page }}
                   </button>
 
-                  <button
-                    @click="fetchSchedules(`/api/v1/schedules?page=${pagination.current_page+1}`)"
+                  <button @click="fetchSchedules(`/api/v1/schedules?page=${pagination.current_page + 1}`)"
                     :disabled="pagination.current_page === pagination.last_page"
                     class="px-3 py-1 text-xs font-bold border rounded-lg disabled:opacity-30 hover:bg-gray-50">
                     Next
@@ -202,8 +192,7 @@
 
                 <div class="grid grid-cols-2 gap-3">
 
-                  <router-link
-                    to="/schedules/create"
+                  <router-link to="/schedules/create"
                     class="bg-white/5 hover:bg-white/10 p-4 rounded-xl text-center border border-white/10 transition-all">
                     <i class="fas fa-plus-circle mb-2 block text-blue-400"></i>
                     <p class="text-[9px] font-bold uppercase tracking-widest">
@@ -211,8 +200,7 @@
                     </p>
                   </router-link>
 
-                  <router-link
-                    to="/players/create"
+                  <router-link to="/players/create"
                     class="bg-white/5 hover:bg-white/10 p-4 rounded-xl text-center border border-white/10 transition-all">
                     <i class="fas fa-user-plus mb-2 block text-purple-400"></i>
                     <p class="text-[9px] font-bold uppercase tracking-widest">
@@ -226,18 +214,19 @@
 
             <!-- ACTIVE PLAYERS -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-              <h2 class="text-sm font-bold text-gray-900 mb-6 uppercase tracking-widest italic border-l-4 border-green-500 pl-3">
+              <h2
+                class="text-sm font-bold text-gray-900 mb-6 uppercase tracking-widest italic border-l-4 border-green-500 pl-3">
                 Active Players
               </h2>
 
               <div class="space-y-5">
 
-                <div v-for="player in onlinePlayers" :key="player.id"
-                  class="flex items-center justify-between group">
+                <div v-for="player in onlinePlayers" :key="player.id" class="flex items-center justify-between group">
 
                   <div class="flex items-center gap-3">
 
-                    <div class="w-9 h-9 rounded-full bg-gray-100 p-0.5 border-2 border-transparent group-hover:border-green-500 transition-all">
+                    <div
+                      class="w-9 h-9 rounded-full bg-gray-100 p-0.5 border-2 border-transparent group-hover:border-green-500 transition-all">
                       <img :src="player.avatar" class="w-full h-full rounded-full object-cover" />
                     </div>
 
@@ -249,7 +238,8 @@
 
                   <div class="flex flex-col items-end">
 
-                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)] animate-pulse"></span>
+                    <span
+                      class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)] animate-pulse"></span>
 
                     <span class="text-[8px] text-gray-300 font-black mt-1 uppercase">
                       Live
@@ -304,32 +294,32 @@ export default {
     this.fetchSchedules();
   },
   methods: {
-async fetchSchedules(url = '/api/v1/schedules') {
-  this.loading = true;
+    async fetchSchedules(url = '/api/v1/schedules') {
+      this.loading = true;
 
-  try {
-    const response = await axios.get(url);
+      try {
+        const response = await axios.get(url);
 
-    const result = response.data.data;
+        const result = response.data.data;
 
-    this.schedules = result.data;
+        this.schedules = result.data;
 
-    this.pagination.current_page = result.current_page;
-    this.pagination.last_page = result.last_page;
-    this.pagination.per_page = result.per_page;
-    this.pagination.total = result.total;
+        this.pagination.current_page = result.current_page;
+        this.pagination.last_page = result.last_page;
+        this.pagination.per_page = result.per_page;
+        this.pagination.total = result.total;
 
-    this.pagination.next_page_url = result.next_page_url;
-    this.pagination.prev_page_url = result.prev_page_url;
+        this.pagination.next_page_url = result.next_page_url;
+        this.pagination.prev_page_url = result.prev_page_url;
 
-    this.currentPage = result.current_page;
+        this.currentPage = result.current_page;
 
-  } catch (error) {
-    console.error("Error fetching schedules:", error);
-  } finally {
-    this.loading = false;
-  }
-},
+      } catch (error) {
+        console.error("Error fetching schedules:", error);
+      } finally {
+        this.loading = false;
+      }
+    },
     formatDay(dateStr) {
       const days = ['MIN', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB'];
       return days[new Date(dateStr).getDay()];
@@ -338,13 +328,13 @@ async fetchSchedules(url = '/api/v1/schedules') {
       return new Date(dateStr).getDate();
     },
     formatTime(dateStr) {
-      return new Date(dateStr).toLocaleTimeString('id-ID', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
+      return new Date(dateStr).toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit'
       }) + ' WIB';
     },
     statusClass(status) {
-      switch(status) {
+      switch (status) {
         case 'live': return 'text-red-600';
         case 'scheduled': return 'text-blue-600';
         case 'finished': return 'text-gray-400';
@@ -356,7 +346,16 @@ async fetchSchedules(url = '/api/v1/schedules') {
 </script>
 
 <style scoped>
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
 </style>

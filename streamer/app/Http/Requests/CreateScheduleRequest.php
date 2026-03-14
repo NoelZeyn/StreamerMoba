@@ -13,10 +13,10 @@ class CreateScheduleRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required|exists:users,id',
+            // 'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
             'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
+            'end_time' => 'nullable|date|after:start_time',
             'status' => 'required|in:scheduled,completed,cancelled',
             'notes' => 'nullable|string'
         ];

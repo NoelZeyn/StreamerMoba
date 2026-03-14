@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Player;
-
+use Illuminate\Support\Facades\Auth;
 class PlayerRepository
 {
 
@@ -14,17 +14,17 @@ class PlayerRepository
 
     public function find(int $id): ?Player
     {
-        return Player::with('wallet')->find($id);
+        return Player::with('wallet')->where('user_id', Auth::id())->find($id);
     }
 
     public function findOrFail(int $id): Player
     {
-        return Player::findOrFail($id);
+        return Player::where('user_id', Auth::id())->findOrFail($id);
     }
 
     public function all()
     {
-        return Player::with('wallet')->get();
+        return Player::with('wallet')->where('user_id', Auth::id())->get();
     }
 
     public function update(Player $player, array $data): Player

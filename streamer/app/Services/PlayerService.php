@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\PlayerRepository;
 use App\Repositories\VipWalletRepository;
 use App\DTO\CreatePlayerDTO;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PlayerService
@@ -20,6 +21,7 @@ class PlayerService
         return DB::transaction(function () use ($dto) {
 
             $player = $this->playerRepository->create([
+                'user_id' => Auth::id(),
                 'name' => $dto->name,
                 'type' => $dto->type
             ]);
@@ -42,11 +44,16 @@ class PlayerService
         return $this->playerRepository->find($id);
     }
 
-    public function update(int $id, array $data)
+    public function update(int $id, CreatePlayerDTO $dto)
     {
-        $player = $this->playerRepository->findOrFail($id);
+        return DB::transaction(function () use ($id, $dto) {
+            $player = $this->playerRepository->findOrFail($id);
 
-        return $this->playerRepository->update($player, $data);
+            return $this->playerRepository->update($player, [
+                'name' => $dto->name,
+                'type' => $dto->type,
+            ]);
+        });
     }
 
     public function delete(int $id)

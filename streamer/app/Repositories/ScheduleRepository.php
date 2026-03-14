@@ -21,26 +21,26 @@ class ScheduleRepository
     {
         return $schedule = Schedule::with([
             'matches.user:id,name',
-            'matches.players.player:id,name', // Schedule -> Matches -> MatchPlayer -> Player
-            'matches.players.hero:id,name',   // Jika ingin ambil nama Hero juga
-            'matches.players.role:id,name'    // Jika ingin ambil nama Role juga
+            'matches.players.player:id,name',
+            'matches.players.hero:id,name',
+            'matches.players.role:id,name'
         ])->findOrFail($scheduleId);
     }
 
-public function listByUser(int $userId, int $perPage = 10)
-{
-    return Schedule::query()
-        ->select([
-            'id',
-            'user_id',
-            'title',
-            'start_time',
-            'status'
-        ])
-        ->where('user_id', $userId)
-        ->orderByDesc('start_time')
-        ->paginate($perPage);
-}
+    public function listByUser(int $userId, int $perPage = 10)
+    {
+        return Schedule::query()
+            ->select([
+                'id',
+                'user_id',
+                'title',
+                'start_time',
+                'status'
+            ])
+            ->where('user_id', $userId)
+            ->orderByDesc('start_time')
+            ->simplePaginate($perPage);
+    }
 
     public function update(Schedule $schedule, array $data): Schedule
     {
@@ -77,6 +77,7 @@ public function listByUser(int $userId, int $perPage = 10)
     public function markAsStarted(Schedule $schedule): Schedule
     {
         $schedule->status = 'live';
+            $schedule->start_time = now();
         $schedule->save();
         return $schedule;
     }

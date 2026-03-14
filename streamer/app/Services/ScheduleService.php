@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTO\CreateScheduleDTO;
 use App\Repositories\ScheduleRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -75,50 +76,48 @@ class ScheduleService
     public function createSchedule($dto)
     {
         return DB::transaction(function () use ($dto) {
-                $schedule = $this->scheduleRepository->create([
-                    'user_id' => Auth::id(),
-                    'title' => $dto->title,
-                    'start_time' => $dto->start_time,
-                    'end_time' => $dto->end_time,
-                    'status' => $dto->status,
-                    'notes' => $dto->notes
-                ]);
-                return $schedule;
+            $schedule = $this->scheduleRepository->create([
+                'user_id' => Auth::id(),
+                'title' => $dto->title,
+                'start_time' => $dto->start_time,
+                'end_time' => $dto->end_time,
+                'status' => $dto->status,
+                'notes' => $dto->notes
+            ]);
+            return $schedule;
         });
     }
 
-    public function updateSchedule($id, $dto)
+    public function updateSchedule(int $id, CreateScheduleDTO $dto)
     {
         return DB::transaction(function () use ($id, $dto) {
-                $schedule = $this->scheduleRepository->findOrFail($id);
+            $schedule = $this->scheduleRepository->findOrFail($id);
 
-                if ($schedule->user_id !== Auth::id()) {
-                    throw new Exception("Unauthorized");
-                }
+            if ($schedule->user_id !== Auth::id()) {
+                throw new \Exception("Unauthorized: Anda bukan pemilik jadwal ini.");
+            }
 
-                $schedule = $this->scheduleRepository->update($schedule, [
-                    'title' => $dto->title,
-                    'start_time' => $dto->start_time,
-                    'end_time' => $dto->end_time,
-                    'status' => $dto->status,
-                    'notes' => $dto->notes
-                ]);
-
-                return $schedule;
+            return $this->scheduleRepository->update($schedule, [
+                'title'      => $dto->title,
+                'start_time' => $dto->start_time,
+                'end_time'   => $dto->end_time,
+                'status'     => $dto->status,
+                'notes'      => $dto->notes
+            ]);
         });
     }
 
     public function deleteSchedule($id)
     {
         return DB::transaction(function () use ($id) {
-                $schedule = $this->scheduleRepository->findOrFail($id);
+            $schedule = $this->scheduleRepository->findOrFail($id);
 
-                if ($schedule->user_id !== Auth::id()) {
-                    throw new Exception("Unauthorized");
-                }
+            if ($schedule->user_id !== Auth::id()) {
+                throw new Exception("Unauthorized");
+            }
 
-                $this->scheduleRepository->delete($schedule);
-                return true;
+            $this->scheduleRepository->delete($schedule);
+            return true;
         });
     }
 

@@ -57,12 +57,19 @@ class DatabaseSeeder extends Seeder
             ]);
         }
         $seasons = Season::all();
-
+        User::create([
+            'name' => "ahmad",
+            'email' => "ahmad@test.com",
+            'password' => Hash::make('password123'),
+            'channel_name' => "Channel_Gaming_21",
+            'webhook_token' => hash('sha256', Str::uuid() . Str::random(10))
+        ]);
         $types = ['VIP', 'PUBLIC', 'STREAMER'];
         for ($i = 1; $i <= 500; $i++) {
             $type = $types[array_rand($types)];
             $player = Player::create([
-                'user_id' => ($type == 'STREAMER') ? $users->random()->id : null,
+                // 'user_id' => ($type == 'STREAMER') ? $users->random()->id : null,
+                'user_id' => 21,
                 'name' => "PlayerName_$i",
                 'type' => $type,
             ]);
@@ -84,13 +91,7 @@ class DatabaseSeeder extends Seeder
                 'price' => rand(10000, 100000),
             ]);
         }
-        User::create([
-            'name' => "ahmad",
-            'email' => "ahmad@test.com",
-            'password' => Hash::make('password123'),
-            'channel_name' => "Channel_Gaming_21",
-            'webhook_token' => hash('sha256', Str::uuid() . Str::random(10))
-        ]);
+
         $statuses = ['scheduled', 'live', 'finished', 'cancelled'];
 
         for ($i = 1; $i <= 50; $i++) {
@@ -100,12 +101,12 @@ class DatabaseSeeder extends Seeder
             Schedule::create([
                 'user_id' => 21,
                 'title' => "Live Stream Session $i",
-                'start_time' => Carbon::now()->addDays($i),
+                // 'start_time' => Carbon::now()->addDays($i),
                 'status' => $status,
                 'notes' => "Note for stream $i",
-                'end_time' => $status === 'finished'
-                    ? Carbon::now()->addDays($i)->addHours(3)
-                    : null,
+                // 'end_time' => $status === 'finished'
+                //     ? Carbon::now()->addDays($i)->addHours(3)
+                //     : null,
             ]);
         }
         $schedules = Schedule::all();

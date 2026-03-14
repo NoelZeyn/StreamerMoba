@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\DTO\CreateScheduleDTO;
 use App\Http\Requests\CreateScheduleRequest;
-use App\Models\Schedule;
 use App\Services\ScheduleService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -33,16 +33,15 @@ class ScheduleController extends Controller
         try {
             $validated = $request->validated();
             $dto = new CreateScheduleDTO(
-                $validated['user_id'],
+                Auth::id(),
                 $validated['title'],
                 $validated['start_time'],
-                $validated['end_time'],
+                $validated['end_time'] ?? null,
                 $validated['status'],
                 $validated['notes'] ?? null
             );
-            $schedule= $this->scheduleService->createSchedule($dto);
+            $schedule = $this->scheduleService->createSchedule($dto);
             return $this->success($schedule, 'Schedule created successfully');
-
         } catch (\Throwable $th) {
             return $this->error($th->getMessage(), 400);
         }
@@ -67,11 +66,23 @@ class ScheduleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update( int $id, CreateScheduleRequest $request): JsonResponse
     {
         try {
-            $this->scheduleService->updateSchedule($id, $request->all());
-            return $this->success($request->all(), 'Schedule updated successfully');
+            $validated = $request->validated();
+
+            $dto = new CreateScheduleDTO(
+                Auth::id(),
+                $validated['title'],
+                $validated['start_time'],
+                $validated['end_time'] ?? null,
+                $validated['status'],
+                $validated['notes'] ?? null
+            );
+
+            $schedule = $this->scheduleService->updateSchedule($id, $dto);
+
+            return $this->success($schedule, 'Schedule updated successfully');
         } catch (\Throwable $th) {
             return $this->error($th->getMessage(), 400);
         }
@@ -120,7 +131,8 @@ class ScheduleController extends Controller
         }
     }
 
-    public function reopen(int $id) {
+    public function reopen(int $id)
+    {
         try {
             $this->scheduleService->reopenSchedule($id);
             return $this->success(null, 'Schedule marked as reopened');

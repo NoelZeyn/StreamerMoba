@@ -13,7 +13,7 @@ class VipWalletPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class VipWalletPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -43,15 +43,15 @@ class VipWalletPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, VipWallet $vipWallet): bool
+    public function delete(User $user, VipWallet $wallet): bool
     {
-        return false;
+        return $wallet->player->user_id === $user->id;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, VipWallet $vipWallet): bool
+    public function restore(User $user, VipWallet $wallet): bool
     {
         return false;
     }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->nullable()
                 ->constrained()
-                ->cascadeOnDelete(); // Optional relationship with users
+                ->cascadeOnDelete();
             $table->string('name');
 
             $table->enum('type', [
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('players');
     }
 };

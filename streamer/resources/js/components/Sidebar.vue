@@ -135,7 +135,7 @@ export default {
     },
     logout() {
       const token = localStorage.getItem("token");
-      axios.post("http://localhost:8000/api/logout", {}, {
+      axios.post("http://localhost:8000/api/v1/logout", {}, {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then(() => {
