@@ -13,12 +13,12 @@ class CreateMatchRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required|exists:users,id',
+            // 'user_id' => 'required|exists:users,id',
             'season_id' => 'required|exists:seasons,id',
-            'schedule_id' => 'required|exists:schedules,id',
+            'schedule_id' => 'required|exists:stream_schedules,id',
             'players' => 'required|array|min:1',
-            'players.*.player_id' => 'required|exists:players,id',
-            'players.*.hero_id' => 'required|exists:heroes,id',
+            'players.*.player_id' => 'required|exists:players,id|distinct',
+            'players.*.hero_id' => 'required|exists:heroes,id|distinct',
             'players.*.role_id' => 'required|exists:roles,id'
         ];
     }

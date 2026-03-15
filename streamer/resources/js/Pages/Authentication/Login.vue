@@ -182,7 +182,6 @@ export default {
         });
 
         localStorage.setItem("token", data.access_token);
-        localStorage.setItem("user", JSON.stringify(data.user));
 
         this.message = "Berhasil masuk! Mengalihkan...";
         this.messageClass = "bg-green-50 text-green-700 border-green-100";

@@ -7,6 +7,7 @@ import Dashboard from "./Pages/Dashboard/Dashboard.vue";
 import ScheduleDetail from "./Pages/Schedule/ScheduleDetail.vue";
 import ScheduleCreate from "./Pages/Schedule/ScheduleCreate.vue";
 import MatchCreate from "./Pages/Play/MatchCreate.vue";
+import PlayerCreate from "./Pages/Player/PlayerCreate.vue";
 // Daftar route
 const routes = [
     { path: "/", redirect: "/login", meta: { title: "Login" } },
@@ -15,7 +16,8 @@ const routes = [
     { path: "/dashboard", component: Dashboard, meta: { title: "Dashboard" } },
     { path: "/schedules/:id", component: ScheduleDetail, meta: { title: "Schedule Detail" } },
     { path: "/schedules/create", component: ScheduleCreate, meta: { title: "Create Schedule" }},
-    { path: "/matches/create", component: MatchCreate, meta: { title: "Create Match" }}
+    { path: "/matches/create", component: MatchCreate, meta: { title: "Create Match" }},
+    { path: "/players/create", component: PlayerCreate, meta: { title: "Create Player" } },
 
 ];
 

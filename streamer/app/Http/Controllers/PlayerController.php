@@ -43,7 +43,8 @@ class PlayerController extends Controller
             $dto = new CreatePlayerDTO(
                 Auth::id(),
                 name: $validated['name'],
-                type: $validated['type']
+                type: $validated['type'],
+                play_balance: $validated['play_balance'] ?? 0
             );
 
             $player = $this->playerService->create($dto);

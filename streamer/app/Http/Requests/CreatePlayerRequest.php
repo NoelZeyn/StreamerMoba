@@ -15,7 +15,8 @@ class CreatePlayerRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'type' => 'required|in:VIP,PUBLIC'
+            'type' => 'required|in:VIP,PUBLIC',
+            'play_balance' => 'nullable|integer|min:0'
         ];
     }
 

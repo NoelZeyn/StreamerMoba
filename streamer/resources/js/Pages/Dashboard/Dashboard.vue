@@ -261,28 +261,39 @@
 </template>
 
 <script>
-import Sidebar from '@/components/Sidebar.vue';
-import axios from 'axios';
+import Sidebar from '@/components/Sidebar.vue'
+import axios from 'axios'
 
 export default {
   components: { Sidebar },
+
   data() {
     return {
       activeMenu: "dashboard",
       loading: true,
-      currentDate: new Intl.DateTimeFormat('id-ID', { dateStyle: 'long' }).format(new Date()),
+
+      currentDate: new Intl.DateTimeFormat('id-ID', {
+        dateStyle: 'long'
+      }).format(new Date()),
+
       schedules: [],
+
       pagination: {
+        current_page: 1,
+        last_page: 1,
+        per_page: 10,
+        total: 0,
         next_page_url: null,
         prev_page_url: null
       },
-      currentPage: 1,
+
       stats: [
         { title: "Total Matches", value: "1,284", trend: "+12%", icon: "fas fa-gamepad", iconBg: "bg-blue-50", iconColor: "text-blue-600", trendColor: "text-green-600 bg-green-50" },
         { title: "Active Players", value: "482", trend: "+5%", icon: "fas fa-users", iconBg: "bg-purple-50", iconColor: "text-purple-600", trendColor: "text-green-600 bg-green-50" },
         { title: "Stream Hours", value: "156h", trend: "-2%", icon: "fas fa-clock", iconBg: "bg-orange-50", iconColor: "text-orange-600", trendColor: "text-red-600 bg-red-50" },
         { title: "Avg. Viewers", value: "892", trend: "+18%", icon: "fas fa-chart-line", iconBg: "bg-green-50", iconColor: "text-green-600", trendColor: "text-green-600 bg-green-50" },
       ],
+
       onlinePlayers: [
         { id: 1, name: "Vasta_Player1", avatar: "https://i.pravatar.cc/150?u=1" },
         { id: 2, name: "Stream_King", avatar: "https://i.pravatar.cc/150?u=2" },
@@ -290,57 +301,96 @@ export default {
       ]
     }
   },
+
   mounted() {
-    this.fetchSchedules();
+    this.initializeDashboard()
   },
+
   methods: {
+
+    async initializeDashboard() {
+      const token = localStorage.getItem("token")
+
+      if (!token) {
+        console.warn("Token tidak ditemukan, redirect login")
+        this.$router.push("/login")
+        return
+      }
+
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+      await this.fetchSchedules()
+    },
+
     async fetchSchedules(url = '/api/v1/schedules') {
-      this.loading = true;
+      this.loading = true
 
       try {
-        const response = await axios.get(url);
 
-        const result = response.data.data;
+        const response = await axios.get(url)
 
-        this.schedules = result.data;
+        const result = response?.data?.data
 
-        this.pagination.current_page = result.current_page;
-        this.pagination.last_page = result.last_page;
-        this.pagination.per_page = result.per_page;
-        this.pagination.total = result.total;
+        if (!result) {
+          console.warn("Data schedule kosong")
+          this.schedules = []
+          return
+        }
 
-        this.pagination.next_page_url = result.next_page_url;
-        this.pagination.prev_page_url = result.prev_page_url;
+        this.schedules = result.data || []
 
-        this.currentPage = result.current_page;
+        this.pagination.current_page = result.current_page
+        this.pagination.last_page = result.last_page
+        this.pagination.per_page = result.per_page
+        this.pagination.total = result.total
+        this.pagination.next_page_url = result.next_page_url
+        this.pagination.prev_page_url = result.prev_page_url
 
       } catch (error) {
-        console.error("Error fetching schedules:", error);
+
+        if (error.response?.status === 401) {
+          console.error("Unauthorized - Token mungkin expired")
+
+          localStorage.removeItem("token")
+          this.$router.push("/login")
+        } else {
+          console.error("Error fetching schedules:", error)
+        }
+
       } finally {
-        this.loading = false;
+        this.loading = false
       }
     },
+
     formatDay(dateStr) {
-      const days = ['MIN', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB'];
-      return days[new Date(dateStr).getDay()];
+      const days = ['MIN', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB']
+      return days[new Date(dateStr).getDay()]
     },
+
     formatDate(dateStr) {
-      return new Date(dateStr).getDate();
+      return new Date(dateStr).getDate()
     },
+
     formatTime(dateStr) {
       return new Date(dateStr).toLocaleTimeString('id-ID', {
         hour: '2-digit',
         minute: '2-digit'
-      }) + ' WIB';
+      }) + ' WIB'
     },
+
     statusClass(status) {
       switch (status) {
-        case 'live': return 'text-red-600';
-        case 'scheduled': return 'text-blue-600';
-        case 'finished': return 'text-gray-400';
-        default: return 'text-orange-500';
+        case 'live':
+          return 'text-red-600'
+        case 'scheduled':
+          return 'text-blue-600'
+        case 'finished':
+          return 'text-gray-400'
+        default:
+          return 'text-orange-500'
       }
     }
+
   }
 }
 </script>

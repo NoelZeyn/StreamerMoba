@@ -18,6 +18,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained()
                 ->cascadeOnDelete();
+                
             $table->string('name');
 
             $table->enum('type', [

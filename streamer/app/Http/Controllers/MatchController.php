@@ -9,6 +9,7 @@ use App\Services\MatchService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class MatchController extends Controller
 {
@@ -33,7 +34,7 @@ class MatchController extends Controller
                 ->toArray();
 
             $dto = new CreateMatchDTO(
-                $request->input('user_id'),
+                Auth::id(),
                 $request->input('season_id'),
                 $request->input('schedule_id'),
                 $players

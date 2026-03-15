@@ -24,7 +24,7 @@ class PlayerRepository
 
     public function all()
     {
-        return Player::with('wallet')->where('user_id', Auth::id())->get();
+        return Player::with('wallet', 'user')->where('user_id', Auth::id())->get();
     }
 
     public function update(Player $player, array $data): Player

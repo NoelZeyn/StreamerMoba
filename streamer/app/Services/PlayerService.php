@@ -21,13 +21,13 @@ class PlayerService
         return DB::transaction(function () use ($dto) {
 
             $player = $this->playerRepository->create([
-                'user_id' => Auth::id(),
-                'name' => $dto->name,
-                'type' => $dto->type
+                'user_id' => $dto->user_id,
+                'name'    => $dto->name,
+                'type'    => $dto->type
             ]);
 
             if ($dto->type === 'VIP') {
-                $this->walletRepository->create($player->id);
+                $this->walletRepository->create($player->id, $dto->play_balance);
             }
 
             return $player->load('wallet');

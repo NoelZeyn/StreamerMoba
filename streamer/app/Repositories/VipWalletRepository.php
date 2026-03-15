@@ -7,7 +7,7 @@ use App\Models\VipWallet;
 class VipWalletRepository
 {
 
-    public function create(int $playerId, int $balance = 0): VipWallet
+    public function create(int $playerId, int $balance): VipWallet
     {
         return VipWallet::create([
             'player_id' => $playerId,
