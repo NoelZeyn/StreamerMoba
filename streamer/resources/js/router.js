@@ -29,7 +29,7 @@ const routes = [
         meta: { title: "Create Schedule" }
     },
     {
-        path: "/matches/create",
+        path: "/matches/:id/create",
         component: () => import("./Pages/Play/MatchCreate.vue"),
         meta: { title: "Create Match" }
     },
@@ -47,6 +47,11 @@ const routes = [
         path: "/queue",
         component: () => import("./Pages/Play/Queue.vue"),
         meta: { title: "Queue" }
+    },
+    {
+        path: "/queues/:id",
+        component: () => import("./Pages/Play/AdminQueue.vue"),
+        meta: { title: "Queue List" }
     }
 ];
 

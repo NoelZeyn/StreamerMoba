@@ -156,20 +156,15 @@
                 <div class="grid grid-cols-2 gap-3">
 
                   <!-- NEW MATCH -->
-                  <router-link :to="{
-                    path: '/matches/create',
-                    query: {
-                      schedule_id: schedule.id,
-                      season_id: schedule.season_id,
-                      title: schedule.title
-                    }
-                  }" class="bg-white/5 hover:bg-white/10 p-4 rounded-xl text-center border border-white/10 transition-all group">
+                  <router-link :to="`/matches/${schedule.id}/create`"
+                    class="bg-white/5 hover:bg-white/10 p-4 rounded-xl text-center border border-white/10 transition-all group">
                     <i class="fas fa-plus-circle mb-2 block text-blue-400 group-hover:scale-110 transition"></i>
                     <p class="text-[9px] font-bold uppercase tracking-widest text-blue-300">
                       New Match
                     </p>
                   </router-link>
 
+                  <!-- START STREAM -->
                   <button v-if="schedule.status === 'scheduled'" @click="startStream"
                     class="bg-white/5 hover:bg-emerald-500/20 p-4 rounded-xl text-center border border-white/10 transition-all active:scale-95 group cursor-pointer">
                     <i class="fas fa-play-circle mb-2 block text-emerald-400 group-hover:scale-110 transition"></i>
@@ -177,6 +172,14 @@
                       Start
                     </p>
                   </button>
+
+                  <router-link :to="`/queues/${schedule.id}`"
+                    class="bg-white/5 hover:bg-white/10 p-4 rounded-xl text-center border border-white/10 transition-all group">
+                    <i class="fas fa-list mb-2 block text-purple-400 group-hover:scale-110 transition"></i>
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-blue-300">
+                      Queue
+                    </p>
+                  </router-link>
 
                   <!-- FINISH STREAM -->
                   <button v-if="schedule.status === 'live'" @click="finishStream"

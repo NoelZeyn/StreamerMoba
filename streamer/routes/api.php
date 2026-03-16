@@ -6,25 +6,36 @@ use App\Http\Controllers\HeroController;
 use App\Http\Controllers\MatchController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\PublicQueueController;
+use App\Http\Controllers\QueueController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaweriaController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SeasonController;
+use App\Http\Controllers\StreamerQueueController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Container\Attributes\Auth;
 
 Route::get('/captcha', [AuthController::class, 'captcha']);
 Route::prefix('v1')->group(function () {
-    Route::get('/donations', [DonationController::class, 'index']);
+    Route::get('/public/queue-list', [PublicQueueController::class, 'getQueueItems']);
     Route::get('/mlbb-nickname', [SaweriaController::class, 'proxyNickname']);
     Route::post('/webhook/saweria/{token}', [SaweriaController::class, 'handle']);
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/public/join-queue', [QueueController::class, 'store']);
+    Route::get('/public/streamers', [PublicQueueController::class, 'getStreamers']);
+    Route::get('/public/schedules', [PublicQueueController::class, 'getSchedules']);
+
+    Route::middleware('auth:api')->group(function () {
+        Route::get('/queues/{schedule_id}', [StreamerQueueController::class, 'show']);
+        Route::patch('/queues/{id}/status', [StreamerQueueController::class, 'updateStatus']);
+        Route::get('/vip/search', [StreamerQueueController::class, 'searchVip']);
+    });
 
     Route::middleware('auth:api')->group(function () {
         Route::post('/matches', [MatchController::class, 'store']);
-
     });
 
     Route::middleware('auth:api')->group(function () {
@@ -32,6 +43,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/transactions', [TransactionController::class, 'index']);
         Route::get('/transactions/{id}', [TransactionController::class, 'show']);
         Route::delete('/transactions/{id}', [TransactionController::class, 'destroy']);
+    });
+    Route::middleware('auth:api')->group(function () {
+        Route::get('/donations', [DonationController::class, 'index']);
     });
 
     Route::middleware('auth:api')->group(function () {

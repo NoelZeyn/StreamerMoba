@@ -42,22 +42,29 @@
               </li>
             </router-link>
             
-            <router-link to="/match" v-slot="{ isActive }">
-              <li :class="menuClass(isActive)">
+            <router-link to="/schedules/create" v-slot="{ isActive }">
+              <li :class="menuClass(isActive)" >
                 <img src="@/assets/laporan1.svg" class="w-5 h-5 opacity-70" />
-                <span>Match</span>
+                <span>Schedule</span>
               </li>
             </router-link>
 
-            <router-link to="/player" v-slot="{ isActive }">
+            <router-link to="/players/create" v-slot="{ isActive }">
               <li :class="menuClass(isActive)">
                 <img src="@/assets/profil.svg" class="w-5 h-5 opacity-70" />
                 <span>Player</span>
               </li>
             </router-link>
+
+            <router-link to="/donations" v-slot="{ isActive }">
+              <li :class="menuClass(isActive)">
+                <img src="@/assets/folder.svg" class="w-5 h-5 opacity-70" />
+                <span>Donation</span>
+              </li>
+            </router-link>
           </ul>
         </div>
-
+<!-- 
         <div class="mb-6">
           <p class="px-4 text-[11px] font-extrabold text-blue-400 uppercase tracking-[0.2em] mb-3">
             Laporan & Data
@@ -70,12 +77,12 @@
               </li>
             </router-link>
           </ul>
-        </div>
+        </div> -->
 
       </div>
 
       <div class="p-4 border-t border-gray-50 bg-gray-50/50">
-        <router-link to="/profile" class="block mb-2 group">
+        <!-- <router-link to="/profile" class="block mb-2 group">
           <div :class="menuClass(activeMenu === 'profile')" class="bg-transparent border-none">
             <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs border border-blue-200">
               U
@@ -85,7 +92,7 @@
               <span class="text-[10px] text-gray-500">Lihat Pengaturan</span>
             </div>
           </div>
-        </router-link>
+        </router-link> -->
         
         <button @click="showModalConfirm = true" 
           class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 transition-all group cursor-pointer">

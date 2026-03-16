@@ -6,7 +6,7 @@
       <header
         class="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <button @click="$router.back()" class="p-2 hover:bg-gray-100 rounded-full transition-all active:scale-95">
+          <button @click="$router.back()" class="p-2 hover:bg-gray-100 rounded-full transition-all active:scale-95 cursor-pointer">
             <i class="fas fa-arrow-left text-gray-600"></i>
           </button>
           <div>
@@ -17,13 +17,12 @@
       </header>
 
       <div class="p-6">
-        <div class="max-w-5xl mx-auto">
+        <div class="max-w-7xl mx-auto">
           <form @submit.prevent="handleSubmit" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             <div class="lg:col-span-2 space-y-6">
               <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h2
-                  class="text-sm font-bold text-gray-900 mb-6 uppercase tracking-widest italic border-l-4 border-blue-500 pl-3">
+                <h2 class="text-sm font-bold text-gray-900 mb-6 uppercase tracking-widest italic border-l-4 border-blue-500 pl-3">
                   Informasi Pertandingan
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -37,14 +36,17 @@
                   </div>
                   <div>
                     <label class="text-[10px] font-bold text-gray-400 uppercase mb-2 block">Jadwal Stream</label>
-                    <div v-if="$route.query.title"
+
+                    <div v-if="form.schedule_id"
                       class="px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-sm font-bold text-gray-700 flex justify-between items-center">
-                      {{ $route.query.title }}
+                      {{ selectedScheduleName }}
                       <i class="fas fa-lock text-gray-300 text-xs"></i>
                     </div>
+
                     <select v-else v-model="form.schedule_id"
                       class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none text-sm font-medium"
                       required>
+                      <option value="" disabled selected>Pilih Jadwal...</option>
                       <option v-for="sch in schedules" :key="sch.id" :value="sch.id">{{ sch.title }}</option>
                     </select>
                   </div>
@@ -53,8 +55,7 @@
 
               <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div class="flex justify-between items-center mb-6">
-                  <h2
-                    class="text-sm font-bold text-gray-900 uppercase tracking-widest italic border-l-4 border-orange-500 pl-3">
+                  <h2 class="text-sm font-bold text-gray-900 uppercase tracking-widest italic border-l-4 border-orange-500 pl-3">
                     Lineup Pemain
                   </h2>
                   <button type="button" @click="addPlayer"
@@ -65,16 +66,16 @@
 
                 <div class="space-y-4">
                   <div v-for="(player, index) in form.players" :key="index"
-                    class="relative p-4 rounded-xl border border-gray-100 bg-gray-50/50 grid grid-cols-1 md:grid-cols-3 gap-3 items-end group">
+                    class="relative p-4 rounded-xl border border-gray-100 bg-gray-50/50 grid grid-cols-1 md:grid-cols-3 gap-3 items-end group transition-all duration-300"
+                    :class="{'ring-2 ring-blue-400 bg-blue-50/20': player.player_id}">
 
                     <button v-if="form.players.length > 1" type="button" @click="removePlayer(index)"
-                      class="absolute -top-2 -right-2 w-6 h-6 bg-white border border-red-100 text-red-500 rounded-full shadow-sm flex items-center justify-center hover:bg-red-500 hover:text-white transition-all z-10">
+                      class="absolute -top-2 -right-2 w-6 h-6 bg-white border border-red-100 text-red-500 rounded-full shadow-sm flex items-center justify-center hover:bg-red-500 hover:text-white transition-all z-10 cursor-pointer">
                       <i class="fas fa-times text-[10px]"></i>
                     </button>
 
                     <div class="relative">
-                      <label class="text-[9px] font-black text-gray-400 uppercase mb-1 block">Player {{ index + 1
-                        }}</label>
+                      <label class="text-[9px] font-black text-gray-400 uppercase mb-1 block">Player {{ index + 1 }}</label>
                       <input type="text" v-model="player.player_search_text" @focus="player.player_show_dropdown = true"
                         @blur="closeDropdownLater(player, 'player')" @input="handlePlayerInput(player)"
                         placeholder="Cari pemain..."
@@ -126,7 +127,8 @@
             </div>
 
             <div class="space-y-6">
-              <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-24">
+              
+              <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6 text-center">Finalisasi</h3>
 
                 <div class="space-y-3 mb-6">
@@ -143,20 +145,86 @@
                 </button>
 
                 <button type="button" @click="$router.back()"
-                  class="w-full mt-3 py-3 text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors">
+                  class="w-full mt-3 py-3 text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors cursor-pointer">
                   BATAL & KEMBALI
                 </button>
               </div>
 
               <div class="bg-orange-50 border border-orange-100 p-4 rounded-2xl">
                 <div class="flex gap-3">
-                  <i class="fas fa-exclamation-triangle text-orange-500 mt-0.5"></i>
+                  <i class="fas fa-exclamation-triangle text-orange-500 mt-0.5 text-sm"></i>
                   <p class="text-[10px] text-orange-700 leading-relaxed font-medium">
-                    Sistem akan otomatis memotong balance pemain berstatus <b>VIP</b> sebanyak 1 point setiap match yang
-                    diinput.
+                    Sistem otomatis memotong balance pemain berstatus <b>VIP</b> sebanyak 1 point tiap match.
                   </p>
                 </div>
               </div>
+
+              <div v-if="form.schedule_id" class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 sticky top-24">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-xs font-bold text-gray-900 uppercase tracking-widest flex items-center gap-2">
+                    <i class="fas fa-list-ol text-blue-500"></i> Live Queue
+                  </h3>
+                  <button type="button" @click="fetchQueues" class="text-gray-400 hover:text-blue-500 transition-colors cursor-pointer">
+                    <i class="fas fa-sync-alt text-[10px]" :class="{'animate-spin': queueLoading}"></i>
+                  </button>
+                </div>
+
+                <div class="mb-4">
+                  <h4 class="text-[9px] font-black text-amber-500 uppercase mb-2 border-b border-gray-100 pb-1">VIP</h4>
+                  <ul class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                    <li v-for="q in vipQueues" :key="q.id" class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
+                      <div>
+                        <p class="text-[10px] font-bold text-gray-800 uppercase">{{ q.name }}</p>
+                        <p class="text-[8px] text-gray-400 font-medium">Balance: {{ q.wallet?.play_balance || 0 }}</p>
+                      </div>
+                      
+                      <div class="flex flex-col items-end gap-1">
+                        <span :class="statusStyle(q.status)" class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider">
+                          {{ q.status }}
+                        </span>
+                        <div v-if="!['playing', 'done', 'skipped'].includes(q.status)" class="flex gap-1 mt-1">
+                          <button @click="acceptQueue(q)" type="button" class="w-6 h-6 bg-blue-100 hover:bg-blue-500 text-blue-600 hover:text-white rounded flex items-center justify-center transition-colors cursor-pointer" title="Terima">
+                            <i class="fas fa-check text-[10px]"></i>
+                          </button>
+                          <button @click="rejectQueue(q)" type="button" class="w-6 h-6 bg-red-100 hover:bg-red-500 text-red-600 hover:text-white rounded flex items-center justify-center transition-colors cursor-pointer" title="Tolak">
+                            <i class="fas fa-times text-[10px]"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                    <li v-if="vipQueues.length === 0" class="text-[10px] text-gray-400 italic py-2 text-center">Kosong</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 class="text-[9px] font-black text-indigo-500 uppercase mb-2 border-b border-gray-100 pb-1">Public Queue</h4>
+                  <ul class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                    <li v-for="q in publicQueues" :key="q.id" class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
+                      <div>
+                        <p class="text-[10px] font-bold text-gray-800 uppercase">#{{ q.queue_number }} - {{ q.nickname || q.name }}</p>
+                        <p class="text-[8px] text-gray-400 font-medium">{{ q.mlbb_id }} - {{ q.mlbb_server }}</p>
+                      </div>
+                      
+                      <div class="flex flex-col items-end gap-1">
+                        <span :class="statusStyle(q.status)" class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider">
+                          {{ q.status }}
+                        </span>
+                        <div v-if="!['playing', 'done', 'skipped'].includes(q.status)" class="flex gap-1 mt-1">
+                          <button @click="acceptQueue(q)" type="button" class="w-6 h-6 bg-blue-100 hover:bg-blue-500 text-blue-600 hover:text-white rounded flex items-center justify-center transition-colors cursor-pointer" title="Terima">
+                            <i class="fas fa-check text-[10px]"></i>
+                          </button>
+                          <button @click="rejectQueue(q)" type="button" class="w-6 h-6 bg-red-100 hover:bg-red-500 text-red-600 hover:text-white rounded flex items-center justify-center transition-colors cursor-pointer" title="Tolak">
+                            <i class="fas fa-times text-[10px]"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                    <li v-if="publicQueues.length === 0" class="text-[10px] text-gray-400 italic py-2 text-center">Kosong</li>
+                  </ul>
+                </div>
+
+              </div>
+
             </div>
 
           </form>
@@ -190,7 +258,11 @@ export default {
             role_id: ''
           }
         ]
-      }
+      },
+      queueLoading: false,
+      vipQueues: [],
+      publicQueues: [],
+      queueTimer: null
     }
   },
   computed: {
@@ -206,20 +278,117 @@ export default {
       return uniquePlayers.size === this.form.players.length &&
         uniqueHeroes.size === this.form.players.length &&
         uniqueRoles.size === this.form.players.length;
+    },
+    selectedScheduleName() {
+      if (!this.form.schedule_id || this.schedules.length === 0) return 'Memuat...';
+      const found = this.schedules.find(s => s.id == this.form.schedule_id);
+      return found ? found.title : 'Jadwal tidak ditemukan';
+    },
+  },
+  watch: {
+    'form.schedule_id'(newVal) {
+      if (newVal) {
+        this.fetchQueues();
+      }
     }
   },
   async mounted() {
     await this.fetchInitialData();
 
-    // Auto-fill dari query parameter (Schedule Detail)
-    if (this.$route.query.schedule_id) {
-      this.form.schedule_id = parseInt(this.$route.query.schedule_id);
+    const urlId = this.$route.params.id;
+
+    if (urlId) {
+      this.form.schedule_id = parseInt(urlId);
+
+      const currentSchedule = this.schedules.find(s => s.id == urlId);
+      if (currentSchedule && currentSchedule.season_id) {
+        this.form.season_id = currentSchedule.season_id;
+      }
     }
-    if (this.$route.query.season_id) {
-      this.form.season_id = parseInt(this.$route.query.season_id);
-    }
+
+    this.queueTimer = setInterval(() => {
+      if (this.form.schedule_id) this.fetchQueues();
+    }, 30000);
+  },
+  beforeUnmount() {
+    if (this.queueTimer) clearInterval(this.queueTimer);
   },
   methods: {
+    // --- AKSI TERIMA & TOLAK ANTARAAN ---
+    acceptQueue(q) {
+      // 1. Ambil data ID dan Nama dari objek antrean
+      // Asumsi API antrean memiliki relasi player_id, jika tidak ada fallback ke q.id
+      const playerId = q.player_id || q.id; 
+      const playerName = q.name || q.nickname;
+
+      // Cek apakah pemain ini sudah ada di dalam form lineup
+      const alreadyInForm = this.form.players.some(p => p.player_id === playerId);
+      if (alreadyInForm) {
+        alert("Pemain ini sudah ada di dalam form lineup!");
+        return;
+      }
+
+      // 2. Cari baris di form.players yang player_id-nya masih kosong
+      let emptySlot = this.form.players.find(p => p.player_id === '');
+
+      // 3. Jika tidak ada yang kosong, tambahkan baris baru secara otomatis (maksimal batas bebas, MLBB biasa 5)
+      if (!emptySlot) {
+        this.addPlayer();
+        emptySlot = this.form.players[this.form.players.length - 1];
+      }
+
+      // 4. Masukkan data ke slot tersebut
+      emptySlot.player_id = playerId;
+      emptySlot.player_search_text = playerName;
+
+      // 5. Ubah status antrean menjadi 'playing' secara instan
+      this.updateQueueStatus(q.id, 'playing');
+    },
+
+    rejectQueue(q) {
+      const playerName = q.name || q.nickname;
+      if (confirm(`Apakah kamu yakin ingin me-skip / menolak ${playerName}?`)) {
+        this.updateQueueStatus(q.id, 'skipped');
+      }
+    },
+
+    async updateQueueStatus(queueId, status) {
+      // Jika kamu punya API untuk update status Queue, panggil di sini
+      try {
+        // Asumsi Endpoint-nya seperti ini. Jika beda, silakan sesuaikan dengan route Backend-mu.
+        await axios.put(`/api/v1/queues/${queueId}/status`, { status });
+        this.fetchQueues(); // Refresh UI Queue
+      } catch (e) {
+        console.error("Gagal mengubah status antrean:", e);
+      }
+    },
+
+    // --- METHOD QUEUE BAWAAN ---
+    async fetchQueues() {
+      if (!this.form.schedule_id) return;
+      this.queueLoading = true;
+      try {
+        const res = await axios.get(`/api/v1/queues/${this.form.schedule_id}`);
+        if (res.data.status) {
+          this.vipQueues = res.data.data.vip_queues;
+          this.publicQueues = res.data.data.public_queues;
+        }
+      } catch (e) {
+        console.error("Gagal load data antrean:", e);
+      } finally {
+        this.queueLoading = false;
+      }
+    },
+    statusStyle(status) {
+      switch (status) {
+        case 'playing': return 'bg-emerald-500 text-white border border-emerald-600';
+        case 'done': return 'bg-gray-200 text-gray-500 border border-gray-300';
+        case 'skipped': return 'bg-red-100 text-red-600 border border-red-200';
+        default: return 'bg-blue-100 text-blue-700 border border-blue-200';
+      }
+    },
+
+    // --- METHOD FORM MATCH BAWAAN ---
     getAvailableRoles(currentIndex) {
       const selectedRoleIds = this.form.players
         .filter((_, index) => index !== currentIndex)

@@ -44,7 +44,9 @@ class PlayerController extends Controller
                 Auth::id(),
                 name: $validated['name'],
                 type: $validated['type'],
-                play_balance: $validated['play_balance'] ?? 0
+                play_balance: $validated['play_balance'] ?? 0,
+                mlbb_id: $validated['mlbb_id'] ?? null,
+                mlbb_server: $validated['mlbb_server'] ?? null,
             );
 
             $player = $this->playerService->create($dto);
