@@ -54,6 +54,23 @@ public function getQueuePublic($scheduleId)
         ->get();
 }
 
+public function getUnregisteredQueue()
+{
+    return Queue::where('queues.user_id', Auth::id())
+        ->select(
+            'queues.nickname',
+            'queues.mlbb_id',
+            'queues.mlbb_server'
+        )
+        ->leftJoin('players', function ($join) {
+            $join->on('queues.mlbb_id', '=', 'players.mlbb_id')
+                 ->on('queues.mlbb_server', '=', 'players.mlbb_server')
+                 ->on('queues.user_id', '=', 'players.user_id');
+        })
+        ->whereNull('players.id') // hanya yang tidak ada di players
+        ->orderBy('queues.queue_number', 'asc')
+        ->get();
+}
 public function changeStatus($queueId, $status)
 {
     return $this->queueRepository->updateStatus($queueId, $status);

@@ -1,157 +1,199 @@
 <template>
-  <div class="flex h-screen bg-gray-50/50 overflow-hidden font-sans text-slate-900">
+  <div class="flex h-screen bg-slate-50 overflow-hidden font-sans text-slate-900">
     <Sidebar :activeMenu="'queues'" />
 
-    <main class="flex-1 min-w-0 overflow-y-auto custom-scrollbar flex flex-col">
-      <header
-        class="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-100 px-8 py-5 flex items-center justify-between">
+    <main class="flex-1 min-w-0 flex flex-col overflow-hidden">
+      <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between z-20 shadow-sm">
         <div class="flex items-center gap-4">
-          <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200">
-            <i class="fas fa-list-ol text-white text-xl"></i>
+          <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-indigo-100 shadow-lg">
+            <i class="fas fa-layer-group text-white text-lg"></i>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">Queue Management</h1>
-            <p class="text-[11px] text-gray-500 font-bold uppercase tracking-widest">SID: {{ scheduleId }} • Atur Antrean</p>
+            <h1 class="text-lg font-bold text-slate-800 leading-tight">Antrean Live Stream</h1>
+            <div class="flex items-center gap-2 mt-0.5">
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-500 uppercase tracking-wider border border-slate-200">
+                SID: {{ scheduleId }}
+              </span>
+              <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+              <p class="text-[11px] text-slate-500 font-medium italic">Otomatis sinkron setiap 30 detik</p>
+            </div>
           </div>
         </div>
 
         <div class="flex items-center gap-3">
-          <button @click="refreshAll" class="p-2.5 hover:bg-gray-100 rounded-xl transition-all border border-gray-200">
-            <i class="fas fa-sync-alt text-gray-500" :class="{ 'animate-spin': loading }"></i>
+          <button @click="refreshAll" 
+            class="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95 shadow-sm">
+            <i class="fas fa-sync-alt" :class="{ 'animate-spin': loading }"></i>
+            Refresh
           </button>
         </div>
       </header>
 
-      <div class="p-8 max-w-7xl mx-auto w-full space-y-8">
-        
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+        <div class="max-w-7xl mx-auto space-y-8">
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <section class="flex flex-col space-y-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-6 bg-amber-400 rounded-full"></div>
+                  <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Prioritas VIP</h3>
+                </div>
+                
+                <div class="relative group">
 
-          <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <h3 class="text-sm font-black uppercase tracking-widest text-amber-600 flex items-center gap-2">
-                <i class="fas fa-crown"></i> VIP List
-              </h3>
-              <div class="relative w-64">
-                <input v-model="searchVipQuery" @input="searchVipPlayers" type="text"
-                  placeholder="Cari & Tambah VIP..."
-                  class="w-full pl-4 pr-10 py-2 text-xs rounded-xl bg-white border border-gray-200 focus:border-amber-500 outline-none transition-all shadow-sm" />
-                <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]"></i>
 
-                <div v-if="vipResults.length > 0"
-                  class="absolute z-30 top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100 border-t-4 border-t-amber-500">
-                  <div v-for="player in vipResults" :key="player.id" @click="addVipDirectly(player)"
-                    class="p-3 hover:bg-amber-50 cursor-pointer flex justify-between items-center border-b border-gray-50 last:border-0 transition-colors">
-                    <div>
-                      <p class="text-[10px] font-black text-gray-900 uppercase">{{ player.name }}</p>
-                      <p class="text-[9px] text-gray-500">ID: {{ player.mlbb_id || '-' }}</p>
+                  <Transition name="fade">
+                    <div v-if="vipResults.length > 0"
+                      class="absolute z-30 top-full right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden ring-1 ring-black ring-opacity-5">
+                      <div v-for="player in vipResults" :key="player.id" @click="addVipDirectly(player)"
+                        class="p-3 hover:bg-indigo-50 cursor-pointer flex justify-between items-center border-b border-slate-50 last:border-0 group/item transition-colors">
+                        <div>
+                          <p class="text-xs font-bold text-slate-800 uppercase">{{ player.name }}</p>
+                          <p class="text-[10px] text-slate-500 font-mono italic">ID: {{ player.mlbb_id || '-' }}</p>
+                        </div>
+                        <i class="fas fa-plus-circle text-slate-300 group-hover/item:text-indigo-500 transition-colors"></i>
+                      </div>
                     </div>
-                    <i class="fas fa-plus-circle text-amber-500"></i>
-                  </div>
+                  </Transition>
                 </div>
               </div>
-            </div>
 
-            <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
-              <table class="w-full text-left">
-                <thead class="bg-gray-50 border-b border-gray-100">
-                  <tr>
-                    <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase">Player</th>
-                    <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase">Status</th>
-                    <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase text-center">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-50">
-                  <tr v-for="q in vipQueues" :key="q.id" :class="{ 'bg-amber-50/50': q.status === 'playing' }">
-                    <td class="px-6 py-5">
-                      <p class="text-sm font-black text-gray-900 uppercase">{{ q.name }}</p>
-                      <p v-if="q.wallet" class="text-[10px] text-amber-600 font-bold">
-                        Credit: {{ q.wallet.play_balance }}
-                      </p>
-                    </td>
-                    <td class="px-6 py-5">
-                      <span :class="statusStyle(q.status)"
-                        class="px-3 py-1 rounded-full text-[9px] font-black uppercase">
-                        {{ q.status }}
-                      </span>
-                    </td>
-                    <td class="px-6 py-5">
-                      <div class="flex justify-center gap-2">
-                        <button v-if="q.status === 'pending'" @click="updateStatus(q.id, 'playing')"
-                          class="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition-all">
-                          <i class="fas fa-play text-xs"></i>
-                        </button>
-                        <button v-if="q.status === 'playing'" @click="updateStatus(q.id, 'done')"
-                          class="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all">
-                          <i class="fas fa-check text-xs"></i>
-                        </button>
-                        <button @click="updateStatus(q.id, 'skipped')"
-                          class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all">
-                          <i class="fas fa-forward text-xs"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div v-if="vipQueues.length === 0" class="p-10 text-center text-gray-400 text-xs italic font-medium">Belum ada VIP di antrean.</div>
-            </div>
+              <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <table class="w-full">
+                  <thead class="bg-slate-50/80 border-b border-slate-100">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">Player</th>
+                      <th class="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Status</th>
+                      <th class="px-6 py-3 text-right text-[10px] font-bold text-slate-400 uppercase tracking-widest pr-10">Kontrol</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-50">
+                    <tr v-for="q in vipQueues" :key="q.id" 
+                      class="group transition-colors" :class="q.status === 'playing' ? 'bg-amber-50/30' : 'hover:bg-slate-50/50'">
+                      <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                          <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600 font-black text-[10px]">VIP</div>
+                          <div>
+                            <p class="text-xs font-bold text-slate-800 uppercase">{{ q.name }}</p>
+                            <p v-if="q.wallet" class="text-[10px] text-slate-500 font-medium">Balance: <span class="text-emerald-600 font-bold font-mono">{{ q.wallet.play_balance }}</span></p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 text-center">
+                        <span :class="statusStyle(q.status)" class="px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-tighter">
+                          {{ q.status }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4">
+                        <div class="flex justify-end gap-1.5">
+                          <button v-if="q.status === 'pending'" @click="updateStatus(q.id, 'playing')"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
+                            <i class="fas fa-play text-[10px]"></i>
+                          </button>
+                          <button v-if="q.status === 'playing'" @click="updateStatus(q.id, 'done')"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
+                            <i class="fas fa-check text-[10px]"></i>
+                          </button>
+                          <button @click="updateStatus(q.id, 'skipped')"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-400 hover:bg-rose-500 hover:text-white transition-all shadow-sm">
+                            <i class="fas fa-forward text-[10px]"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div v-if="vipQueues.length === 0" class="py-12 text-center text-slate-400 text-xs italic">Antrean VIP kosong.</div>
+              </div>
+            </section>
+
+            <section class="flex flex-col space-y-4">
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-6 bg-indigo-500 rounded-full"></div>
+                <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Antrean Publik</h3>
+                <span class="text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full font-bold ml-2">{{ publicQueues.length }} Player</span>
+              </div>
+
+              <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex-1">
+                <table class="w-full">
+                  <thead class="bg-slate-50/80 border-b border-slate-100">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest w-16">Pos</th>
+                      <th class="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">Player Info</th>
+                      <th class="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Status</th>
+                      <th class="px-6 py-3 text-right text-[10px] font-bold text-slate-400 uppercase tracking-widest pr-10">Kontrol</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-50">
+                    <tr v-for="q in publicQueues" :key="q.id" 
+                      class="group transition-colors" :class="q.status === 'playing' ? 'bg-indigo-50/30' : 'hover:bg-slate-50/50'">
+                      <td class="px-6 py-4">
+                        <span class="text-xs font-mono font-bold text-slate-400">#{{ String(q.queue_number).padStart(2, '0') }}</span>
+                      </td>
+                      <td class="px-6 py-4">
+                        <p class="text-xs font-bold text-slate-800 uppercase">{{ q.nickname }}</p>
+                        <p class="text-[10px] text-slate-400 font-medium">MLBB Server: <span class="text-slate-600 font-bold font-mono">{{ q.mlbb_server }}</span></p>
+                      </td>
+                      <td class="px-6 py-4 text-center">
+                        <span :class="statusStyle(q.status)" class="px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-tighter">
+                          {{ q.status }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4">
+                        <div class="flex justify-end gap-1.5">
+                          <button v-if="q.status === 'pending'" @click="updateStatus(q.id, 'playing')"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
+                            <i class="fas fa-play text-[10px]"></i>
+                          </button>
+                          <button v-if="q.status === 'playing'" @click="updateStatus(q.id, 'done')"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
+                            <i class="fas fa-check text-[10px]"></i>
+                          </button>
+                          <button @click="updateStatus(q.id, 'skipped')"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-400 hover:bg-rose-500 hover:text-white transition-all shadow-sm">
+                            <i class="fas fa-forward text-[10px]"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div v-if="publicQueues.length === 0" class="py-12 text-center text-slate-400 text-xs italic">Antrean publik kosong.</div>
+              </div>
+            </section>
+
           </div>
-
-          <div class="space-y-4">
-            <h3 class="text-sm font-black uppercase tracking-widest text-indigo-600 flex items-center gap-2">
-              <i class="fas fa-users"></i> Public Queue
-            </h3>
-            <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
-              <table class="w-full text-left">
-                <thead class="bg-gray-50 border-b border-gray-100">
-                  <tr>
-                    <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase">No</th>
-                    <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase">Player</th>
-                    <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase">Status</th>
-                    <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase text-center">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-50">
-                  <tr v-for="q in publicQueues" :key="q.id" :class="{ 'bg-indigo-50/50': q.status === 'playing' }">
-                    <td class="px-6 py-5 text-sm font-bold text-gray-400">#{{ q.queue_number }}</td>
-                    <td class="px-6 py-5">
-                      <p class="text-sm font-black text-gray-900 uppercase">{{ q.nickname }}</p>
-                      <p class="text-[10px] text-gray-400 font-bold">Server: {{ q.mlbb_server }}</p>
-                    </td>
-                    <td class="px-6 py-5">
-                      <span :class="statusStyle(q.status)"
-                        class="px-3 py-1 rounded-full text-[9px] font-black uppercase">
-                        {{ q.status }}
-                      </span>
-                    </td>
-                    <td class="px-6 py-5">
-                      <div class="flex justify-center gap-2">
-                        <button v-if="q.status === 'pending'" @click="updateStatus(q.id, 'playing')"
-                          class="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition-all">
-                          <i class="fas fa-play text-xs"></i>
-                        </button>
-                        <button v-if="q.status === 'playing'" @click="updateStatus(q.id, 'done')"
-                          class="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all">
-                          <i class="fas fa-check text-xs"></i>
-                        </button>
-                        <button @click="updateStatus(q.id, 'skipped')"
-                          class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all">
-                          <i class="fas fa-forward text-xs"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div v-if="publicQueues.length === 0" class="p-10 text-center text-gray-400 text-xs italic font-medium">Belum ada player di antrean.</div>
-            </div>
-          </div>
-
         </div>
       </div>
     </main>
   </div>
 </template>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+</style>
 
 <script>
 import Sidebar from '@/components/Sidebar.vue';
@@ -164,7 +206,6 @@ export default {
     return {
       loading: false,
       submitting: false,
-      searchVipQuery: '',
       vipResults: [],
       vipQueues: [],
       publicQueues: [],
@@ -195,22 +236,6 @@ export default {
       }
     },
 
-    searchVipPlayers: debounce(async function () {
-      if (this.searchVipQuery.length < 2) {
-        this.vipResults = [];
-        return;
-      }
-      try {
-        const res = await axios.get('/api/v1/vip/search', {
-          params: { name: this.searchVipQuery }
-        });
-        this.vipResults = res.data.data;
-      } catch (e) {
-        console.error("Pencarian VIP gagal");
-      }
-    }, 500),
-
-    // Fungsi baru: Pilih langsung dari dropdown dan tambah ke queue
     async addVipDirectly(player) {
       if (this.submitting) return;
       this.submitting = true;

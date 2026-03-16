@@ -21,7 +21,6 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Seed Roles
         $roleNames = ['Exp Lane', 'Mid Lane', 'Gold Lane', 'Jungling', 'Roaming'];
         $roles = [];
         foreach ($roleNames as $name) {
@@ -119,7 +118,6 @@ class DatabaseSeeder extends Seeder
                 'played_at' => Carbon::now()->subMinutes(rand(1, 1000)),
             ]);
 
-            // Isi 5 Player per Match
             for ($j = 1; $j <= 5; $j++) {
                 MatchPlayer::create([
                     'match_id' => $match->id,

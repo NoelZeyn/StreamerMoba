@@ -111,12 +111,8 @@
 
                 <div class="space-y-4">
                   <div class="grid grid-cols-1 gap-3">
-                    <div class="relative">
-                      <input v-model="form.mlbb_id" placeholder="User ID" class="w-full px-5 py-4 rounded-xl bg-gray-50 border border-gray-100 text-gray-900 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all shadow-inner" />
-                    </div>
-                    <div class="relative">
-                      <input v-model="form.mlbb_server" placeholder="Zone ID" class="w-full px-5 py-4 rounded-xl bg-gray-50 border border-gray-100 text-gray-900 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all shadow-inner" />
-                    </div>
+                    <input v-model="form.mlbb_id" placeholder="User ID" class="w-full px-5 py-4 rounded-xl bg-gray-50 border border-gray-100 text-gray-900 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all shadow-inner" />
+                    <input v-model="form.mlbb_server" placeholder="Zone ID" class="w-full px-5 py-4 rounded-xl bg-gray-50 border border-gray-100 text-gray-900 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all shadow-inner" />
                   </div>
 
                   <button @click="fetchNickname" :disabled="loadingNickname || !form.mlbb_id"
@@ -126,13 +122,26 @@
                   </button>
 
                   <div v-if="form.nickname" class="pt-4 animate-in zoom-in duration-300">
-                    <div class="p-5 bg-emerald-50 border border-emerald-100 rounded-2xl mb-5 text-center">
+                    <div class="p-5 bg-emerald-50 border border-emerald-100 rounded-2xl mb-4 text-center">
                       <span class="text-[9px] text-emerald-600 font-black uppercase block mb-1">Pemain Ditemukan</span>
                       <span class="text-xl font-black text-emerald-700 uppercase italic tracking-tight">{{ form.nickname }}</span>
                     </div>
 
-                    <button @click="handleSubmit" :disabled="submitting"
-                      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-lg shadow-blue-200 uppercase tracking-[0.2em] text-xs transition-all active:scale-95">
+                    <div class="mb-4 bg-gray-50 p-3 rounded-2xl border border-gray-100 shadow-inner">
+                      <div class="flex items-center justify-between mb-2 bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
+                        <div class="flex-grow flex justify-center">
+                          <img v-if="captchaUrl" :src="captchaUrl" alt="Captcha" class="h-9 rounded select-none pointer-events-none" />
+                        </div>
+                        <button @click="loadCaptcha" type="button" class="text-blue-600 p-2 hover:bg-blue-50 rounded-full transition-colors">
+                          <i class="fas fa-sync-alt text-xs"></i>
+                        </button>
+                      </div>
+                      <input v-model="captchaInput" placeholder="KODE CAPTCHA" maxlength="5"
+                        class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-600 outline-none uppercase text-center tracking-widest font-black text-sm" />
+                    </div>
+
+                    <button @click="handleSubmit" :disabled="submitting || !captchaInput"
+                      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-lg shadow-blue-200 uppercase tracking-[0.2em] text-xs transition-all active:scale-95 disabled:opacity-50">
                       {{ submitting ? 'Memproses...' : 'Ambil Antrean Sekarang' }}
                     </button>
                   </div>
@@ -145,7 +154,7 @@
                 <i class="fas fa-shield-halved"></i> Sistem Antrean
               </h4>
               <p class="text-[11px] text-blue-900/60 font-medium leading-relaxed italic">
-                Nomor antrean akan diberikan secara otomatis setelah klik tombol daftar. Pastikan standby di lobby game.
+                Nomor antrean diberikan otomatis. Harap standby di lobby game MLBB Anda.
               </p>
             </div>
           </aside>
@@ -157,7 +166,7 @@
           </div>
           <h3 class="text-2xl font-black text-gray-900 uppercase italic tracking-tight">Menunggu Pilihan Anda</h3>
           <p class="text-gray-400 text-sm mt-3 font-medium max-w-sm mx-auto leading-relaxed">
-            Silakan pilih streamer dan sesi streaming yang sedang aktif untuk melihat daftar antrean pemain.
+            Silakan pilih streamer dan sesi streaming untuk bergabung.
           </p>
         </div>
       </div>
@@ -174,6 +183,8 @@ export default {
       streamers: [],
       schedules: [],
       queues: [],
+      captchaUrl: '',
+      captchaInput: '',
       loadingNickname: false,
       loadingQueue: false,
       submitting: false,
@@ -195,6 +206,7 @@ export default {
   },
   mounted() {
     this.fetchStreamers();
+    this.loadCaptcha();
     this.refreshInterval = setInterval(() => {
       if (this.form.schedule_id) this.fetchQueue();
     }, 20000);
@@ -203,6 +215,11 @@ export default {
     clearInterval(this.refreshInterval);
   },
   methods: {
+    loadCaptcha() {
+      const baseUrl = "http://localhost:8000/api/captcha";
+      this.captchaUrl = `${baseUrl}?t=${new Date().getTime()}`;
+      this.captchaInput = '';
+    },
     async fetchStreamers() {
       try {
         const res = await axios.get('/api/v1/public/streamers');
@@ -218,11 +235,15 @@ export default {
         this.schedules = res.data.data;
       } catch (e) { console.error("Gagal load sesi"); }
     },
-    async handleScheduleChange() {
+    handleScheduleChange() {
       this.form.nickname = '';
       this.fetchQueue();
     },
     async fetchNickname() {
+      if (!this.form.mlbb_id || !this.form.mlbb_server) {
+        alert("Isi User ID dan Zone ID!");
+        return;
+      }
       this.loadingNickname = true;
       try {
         const res = await axios.get('/api/v1/mlbb-nickname', { params: { id: this.form.mlbb_id, zone: this.form.mlbb_server } });
@@ -244,16 +265,26 @@ export default {
       } finally { this.loadingQueue = false; }
     },
     async handleSubmit() {
+      if (!this.captchaInput) {
+        alert("Harap isi captcha!");
+        return;
+      }
       this.submitting = true;
       try {
-        const res = await axios.post('/api/v1/public/join-queue', this.form);
+        const res = await axios.post('/api/v1/public/join-queue', {
+          ...this.form,
+          captcha: this.captchaInput
+        });
         alert(`Berhasil! Nomor Antrean Anda: #${res.data.data.queue_number}`);
         this.form.nickname = '';
         this.form.mlbb_id = '';
         this.form.mlbb_server = '';
+        this.captchaInput = '';
+        this.loadCaptcha();
         this.fetchQueue();
       } catch (e) {
         alert(e.response?.data?.message || "Gagal mendaftar");
+        this.loadCaptcha();
       } finally { this.submitting = false; }
     }
   }
@@ -264,9 +295,6 @@ export default {
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
 .animate-in { animation: fadeIn 0.5s ease-out forwards; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

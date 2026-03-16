@@ -18,18 +18,19 @@ use Illuminate\Container\Attributes\Auth;
 
 Route::get('/captcha', [AuthController::class, 'captcha']);
 Route::prefix('v1')->group(function () {
-    Route::get('/public/queue-list', [PublicQueueController::class, 'getQueueItems']);
-    Route::get('/mlbb-nickname', [SaweriaController::class, 'proxyNickname']);
+    Route::get('/public/queue-list', [PublicQueueController::class, 'getQueueItems'])->middleware('throttle:10,1');
+    Route::get('/mlbb-nickname', [SaweriaController::class, 'proxyNickname'])->middleware('throttle:20,1');
     Route::post('/webhook/saweria/{token}', [SaweriaController::class, 'handle']);
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/public/join-queue', [QueueController::class, 'store']);
-    Route::get('/public/streamers', [PublicQueueController::class, 'getStreamers']);
-    Route::get('/public/schedules', [PublicQueueController::class, 'getSchedules']);
+    Route::post('/public/join-queue', [QueueController::class, 'store'])->middleware('throttle:3,1');
+    Route::get('/public/streamers', [PublicQueueController::class, 'getStreamers'])->middleware('throttle:10,1');
+    Route::get('/public/schedules', [PublicQueueController::class, 'getSchedules'])->middleware('throttle:10,1');
 
     Route::middleware('auth:api')->group(function () {
         Route::get('/queues/{schedule_id}', [StreamerQueueController::class, 'show']);
+        Route::get('/queues2', [StreamerQueueController::class, 'index2']);
         Route::patch('/queues/{id}/status', [StreamerQueueController::class, 'updateStatus']);
         Route::get('/vip/search', [StreamerQueueController::class, 'searchVip']);
     });

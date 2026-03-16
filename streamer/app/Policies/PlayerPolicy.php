@@ -9,7 +9,6 @@ class PlayerPolicy
 {
     public function viewAny(User $user): bool
     {
-        // Berikan true agar user yang login bisa melihat daftar player-nya
         return true;
     }
 

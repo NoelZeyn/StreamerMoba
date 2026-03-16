@@ -51,7 +51,6 @@ class AuthController extends Controller
                 $validated['email'],
                 $validated['password'],
                 $validated['channel_name'],
-                $validated['webhook_token']
             );
 
             $user = $this->authService->register($dto);
@@ -63,19 +62,34 @@ class AuthController extends Controller
         }
     }
 
-    public function captcha(): JsonResponse
+    public function captcha()
     {
-        $code = rand(10000, 99999);
-
+        $code = (string) rand(10000, 99999);
         Cache::put(
             'captcha_' . request()->ip(),
             $code,
             now()->addMinutes(5)
         );
+        $width = 120;
+        $height = 40;
+        $image = imagecreate($width, $height);
 
-        return response()->json([
-            'captcha' => $code
-        ]);
+        $background = imagecolorallocate($image, 240, 240, 240);
+        $textColor = imagecolorallocate($image, 0, 80, 150);
+        $noiseColor = imagecolorallocate($image, 100, 100, 100);
+
+        for ($i = 0; $i < 10; $i++) {
+            imageline($image, rand(0, $width), rand(0, $height), rand(0, $width), rand(0, $height), $noiseColor);
+        }
+
+        imagestring($image, 5, 35, 12, $code, $textColor);
+
+        ob_start();
+        imagepng($image);
+        $imageData = ob_get_clean();
+        imagedestroy($image);
+
+        return response($imageData)->header('Content-Type', 'image/png');
     }
 
     public function login(LoginRequest $request): JsonResponse

@@ -154,7 +154,6 @@ export default {
       this.submitting = true;
       try {
         await axios.post('/api/v1/schedules', this.form);
-        // Toast success notification bisa ditambah di sini
         this.$router.push('/dashboard'); 
       } catch (error) {
         console.error("Gagal menyimpan jadwal:", error);

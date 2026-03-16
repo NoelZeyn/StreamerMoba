@@ -52,6 +52,10 @@ const routes = [
         path: "/queues/:id",
         component: () => import("./Pages/Play/AdminQueue.vue"),
         meta: { title: "Queue List" }
+    },
+    {
+        path: "/:pathMatch(.*)*",
+        redirect: "/login"
     }
 ];
 
@@ -60,7 +64,6 @@ const router = createRouter({
     routes,
 });
 
-// Set judul halaman
 router.afterEach((to) => {
     if (to.meta?.title) {
         document.title = to.meta.title;

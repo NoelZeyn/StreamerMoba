@@ -15,21 +15,6 @@ class AuthService
     public function __construct(
         protected UserRepository $userRepository
     ) {}
-
-    // public function register(CreateUserDTO $dto)
-    // {
-    //     return DB::transaction(function () use ($dto) {
-
-    //         $user = $this->userRepository->create([
-    //             'name' => $dto->name,
-    //             'email' => $dto->email,
-    //             'channel_name' => $dto->channel_name,
-    //             'password' => Hash::make($dto->password)
-    //         ]);
-    //         Auth::login($user);
-    //         return $user;
-    //     });
-    // }
     public function register(CreateUserDTO $dto): array
     {
         return DB::transaction(function () use ($dto) {

@@ -34,11 +34,10 @@ class PublicRepository
 
     public function searchVipByName($name, $streamerId)
 {
-    // Mencari user dengan role VIP dan mengambil saldo walletnya
-    return User::role('VIP') // Asumsi menggunakan Spatie Role atau kolom role
+    return User::role('VIP') 
         ->where('name', 'LIKE', "%{$name}%")
         ->with(['vipWallet' => function($q) use ($streamerId) {
-            $q->where('user_id', $streamerId); // Saldo khusus di streamer tersebut
+            $q->where('user_id', $streamerId); 
         }])
         ->get();
 }

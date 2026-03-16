@@ -43,7 +43,7 @@ class PlayerController extends Controller
             $dto = new CreatePlayerDTO(
                 Auth::id(),
                 name: $validated['name'],
-                type: $validated['type'],
+                type: $validated['type'] ?? 'PUBLIC',
                 play_balance: $validated['play_balance'] ?? 0,
                 mlbb_id: $validated['mlbb_id'] ?? null,
                 mlbb_server: $validated['mlbb_server'] ?? null,

@@ -196,7 +196,6 @@ export default {
       this.loading = true;
       try {
         const response = await axios.get('/api/v1/donations');
-        // Urutkan terbaru ke terlama
         this.donations = response.data.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       } catch (error) {
         console.error("Error loading donations:", error);

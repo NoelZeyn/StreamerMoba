@@ -202,7 +202,6 @@ export default {
           }
         });
 
-        // API Isan me-return success: true/false
         if (response.data && response.data.success) {
           this.form.name = response.data.name;
           this.form.mlbb_id = response.data.id;
@@ -233,7 +232,6 @@ export default {
 
         await axios.post('/api/v1/players', payload);
 
-        // Success feedback
         alert("Pemain " + this.form.name + " berhasil didaftarkan!");
         this.$router.push('/dashboard');
       } catch (error) {
