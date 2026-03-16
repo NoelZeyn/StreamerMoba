@@ -23,7 +23,9 @@ class PlayerService
             $player = $this->playerRepository->create([
                 'user_id' => $dto->user_id,
                 'name'    => $dto->name,
-                'type'    => $dto->type
+                'type'    => $dto->type,
+                'mlbb_id' => $dto->mlbb_id,
+                'mlbb_server' => $dto->mlbb_server,
             ]);
 
             if ($dto->type === 'VIP') {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DonationController;
 use App\Http\Controllers\HeroController;
 use App\Http\Controllers\MatchController;
 use Illuminate\Support\Facades\Route;
@@ -14,8 +15,9 @@ use Illuminate\Container\Attributes\Auth;
 
 Route::get('/captcha', [AuthController::class, 'captcha']);
 Route::prefix('v1')->group(function () {
+    Route::get('/donations', [DonationController::class, 'index']);
+    Route::get('/mlbb-nickname', [SaweriaController::class, 'proxyNickname']);
     Route::post('/webhook/saweria/{token}', [SaweriaController::class, 'handle']);
-
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout']);

@@ -16,7 +16,9 @@ class CreatePlayerRequest extends FormRequest
         return [
             'name' => 'required|string|max:100',
             'type' => 'required|in:VIP,PUBLIC',
-            'play_balance' => 'nullable|integer|min:0'
+            'play_balance' => 'nullable|integer|min:0',
+            'mlbb_id' => 'nullable|string|max:20',
+            'mlbb_server' => 'nullable|string|max:20'
         ];
     }
 
@@ -27,7 +29,12 @@ class CreatePlayerRequest extends FormRequest
             'name.string' => 'Player name must be a string',
             'name.max' => 'Player name cannot exceed 100 characters',
             'type.required' => 'Player type is required',
-            'type.in' => 'Player type must be either VIP or PUBLIC'
+            'type.in' => 'Player type must be either VIP or PUBLIC',
+            'mlbb_id.string' => 'MLBB ID must be a string',
+            'mlbb_id.max' => 'MLBB ID cannot exceed 20 characters',
+            'mlbb_server.string' => 'MLBB Server must be a string',
+            'mlbb_server.max' => 'MLBB Server cannot exceed 20 characters'
+
         ];
     }
 }

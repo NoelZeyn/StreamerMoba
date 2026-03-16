@@ -10,6 +10,7 @@ use App\Repositories\VipWalletRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class TransactionService
 {
@@ -20,35 +21,24 @@ class TransactionService
         protected VipWalletRepository $walletRepository
     ) {}
 
-    public function createTransaction(CreateTransactionDTO $dto)
+    public function createTransactionFromWebhook(CreateTransactionDTO $dto, int $userId)
     {
-        if ($dto->quantity <= 0) {
-            throw new Exception('Quantity must be greater than 0');
-        }
+        if ($dto->quantity <= 0) return;
 
-        return DB::transaction(function () use ($dto) {
-            $player = $this->playerRepository->find($dto->player_id);
+        Log::info("Saweria: Membuat transaksi untuk Player ID {$dto->player_id} dengan quantity {$dto->quantity} dan price {$dto->price}");
+        return DB::transaction(function () use ($dto, $userId) {
             $wallet = $this->walletRepository->lockByPlayer($dto->player_id);
-
-            if (!$player) {
-                throw new Exception('Player not found');
-            }
-
-            if (!$wallet) {
-                throw new Exception('Wallet not found');
-            }
+            if (!$wallet) return null;
 
             $this->walletRepository->increment($wallet, $dto->quantity);
 
-            $transaction = $this->transactionRepository->create([
-                'user_id' => Auth::id(),
+            return $this->transactionRepository->create([
+                'user_id' => $userId,
                 'player_id' => $dto->player_id,
                 'quantity'  => $dto->quantity,
                 'price'     => $dto->price,
                 'status'    => 'success'
             ]);
-
-            return $transaction;
         });
     }
 
@@ -65,7 +55,7 @@ class TransactionService
     public function delete(int $id)
     {
         try {
-             DB::transaction(function () use ($id) {
+            DB::transaction(function () use ($id) {
                 $transaction = $this->transactionRepository->findOrFail($id);
                 $wallet = $this->walletRepository->lockByPlayer($transaction->player_id);
 

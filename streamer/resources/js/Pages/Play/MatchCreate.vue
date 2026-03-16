@@ -86,7 +86,7 @@
                         <li v-for="p in filteredPlayers(player.player_search_text, index)" :key="p.id"
                           @mousedown="selectPlayer(player, p)"
                           class="px-3 py-2 text-xs font-bold text-gray-700 cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                          {{ p.name }} <span class="text-gray-400 font-normal">({{ p.type }})</span>
+                          {{ p.name }} ({{ p.mlbb_id }}) <span class="text-gray-400 font-normal">({{ p.type }})</span>
                         </li>
                       </ul>
                     </div>

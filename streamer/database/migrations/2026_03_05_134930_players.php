@@ -18,9 +18,10 @@ return new class extends Migration
                 ->nullable()
                 ->constrained()
                 ->cascadeOnDelete();
-                
-            $table->string('name');
 
+            $table->string('name');
+            $table->string('mlbb_id')->nullable();
+            $table->string('mlbb_server')->nullable();
             $table->enum('type', [
                 'VIP',
                 'PUBLIC',

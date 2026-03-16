@@ -10,6 +10,8 @@ class Player extends Model
         'user_id',
         'name',
         'type',
+        'mlbb_id',
+        'mlbb_server'
     ];
 
     public function user()

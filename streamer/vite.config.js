@@ -16,5 +16,11 @@ export default defineConfig({
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
+                host: true,
+        port: 5173,
+        cors: true,
+        hmr: {
+            host: 'localhost'
+        }
     },
 });

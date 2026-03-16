@@ -15,7 +15,9 @@
         "vite": "^7.0.7"
     },
     "dependencies": {
+        "@fortawesome/fontawesome-free": "^7.2.0",
         "@vitejs/plugin-vue": "^6.0.4",
+        "jwt-decode": "^4.0.0",
         "vue": "^3.5.29",
         "vue-recaptcha": "^3.0.0-alpha.6",
         "vue-router": "^4.6.4",
