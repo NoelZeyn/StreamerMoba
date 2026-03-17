@@ -79,7 +79,7 @@
       </div>
 
       <div class="p-4 border-t border-gray-100 bg-gray-50/50 flex-none">
-        <router-link to="/profile" class="block mb-2 group" @click.native="handleNavigation()">
+        <!-- <router-link to="/profile" class="block mb-2 group" @click.native="handleNavigation()">
           <div :class="[menuClass(activeMenu === 'profile'), 'bg-white border border-gray-100 shadow-sm']">
             <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs border border-blue-200 flex-shrink-0">
               U
@@ -89,7 +89,7 @@
               <span class="text-[10px] text-gray-500 truncate">Lihat Pengaturan</span>
             </div>
           </div>
-        </router-link>
+        </router-link> -->
 
         <button @click="showModalConfirm = true"
           class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 transition-all group cursor-pointer">
@@ -133,7 +133,6 @@ export default {
   methods: {
     handleNavigation(menu = null) {
       if (menu) this.$emit("update:activeMenu", menu);
-      // Otomatis tutup sidebar setelah klik menu di mobile
       if (this.isMobile) {
         this.isSidebarOpen = false;
       }
@@ -153,7 +152,6 @@ export default {
     },
     checkScreenSize() {
       this.isMobile = window.innerWidth < 768;
-      // Jika desktop default buka, jika mobile default tutup
       this.isSidebarOpen = !this.isMobile;
     },
     menuClass(isActive) {
