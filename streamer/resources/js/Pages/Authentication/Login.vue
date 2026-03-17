@@ -128,8 +128,7 @@ export default {
   },
   methods: {
     loadCaptcha() {
-      const baseUrl = "http://localhost:8000/api/captcha";
-      this.captchaUrl = `${baseUrl}?t=${new Date().getTime()}`;
+      this.captchaUrl = `api/captcha?t=${new Date().getTime()}`;
       this.captchaInput = "";
     },
     togglePassword() {
@@ -140,8 +139,7 @@ export default {
       this.message = "";
       
       try {
-        const apiUrl = "http://localhost:8000/api/v1";
-        const { data } = await axios.post(`${apiUrl}/login`, {
+        const { data } = await axios.post(`api/v1/login`, {
           ...this.form,
           captcha: this.captchaInput
         });
