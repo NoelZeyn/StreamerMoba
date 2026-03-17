@@ -341,6 +341,8 @@ export default {
 </script>
 
 <style scoped>
+
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
