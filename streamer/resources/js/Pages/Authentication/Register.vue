@@ -1,10 +1,11 @@
 <template>
   <div class="fixed inset-0 w-full flex flex-col md:flex-row-reverse bg-white font-sans overflow-hidden">
 
-    <div class="hidden md:flex md:w-1/2 bg-[#1e60ff] relative overflow-hidden">
+    <div class="hidden md:flex md:w-1/2 bg-[#1e60ff] relative overflow-y-auto">
       <img class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-20" />
 
-      <div class="relative z-10 p-10 lg:p-14 flex flex-col justify-between text-white w-full h-full text-right items-end">
+      <div
+        class="relative z-10 p-10 lg:p-14 flex flex-col justify-between text-white w-full h-full text-right items-end">
         <div class="flex items-center gap-4 flex-row-reverse">
           <div class="bg-white/10 p-2 rounded-xl backdrop-blur-sm border border-white/20">
             <!-- <img :src="Background" class="w-8 h-8 brightness-0 invert" /> -->
@@ -27,11 +28,12 @@
         </p>
       </div>
 
-      <div class="absolute -bottom-10 -left-10 w-64 h-64 bg-blue-400 rounded-full mix-blend-multiply blur-3xl opacity-20">
+      <div
+        class="absolute -bottom-10 -left-10 w-64 h-64 bg-blue-400 rounded-full mix-blend-multiply blur-3xl opacity-20">
       </div>
     </div>
 
-    <div class="w-full md:w-1/2 flex items-center justify-center bg-white p-6 md:p-10 lg:p-14">
+    <div class="w-full md:w-1/2 flex items-center justify-center bg-white p-6 md:p-10 lg:p-14 py-12">
       <div class="w-full max-w-md animate-slide-in">
 
         <div class="mb-8 text-center md:text-left">
@@ -76,20 +78,20 @@
           </div>
 
           <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
-            <div class="flex items-center justify-between mb-2 bg-white p-2 rounded-lg border border-gray-100 shadow-sm">
-              
+            <div
+              class="flex items-center justify-between mb-2 bg-white p-2 rounded-lg border border-gray-100 shadow-sm">
+
               <div class="flex-grow flex justify-center">
-                <img 
-                  v-if="captchaUrl" 
-                  :src="captchaUrl" 
-                  alt="Captcha" 
-                  class="h-10 rounded select-none pointer-events-none"
-                />
+                <img v-if="captchaUrl" :src="captchaUrl" alt="Captcha"
+                  class="h-10 rounded select-none pointer-events-none" />
               </div>
 
-              <button @click="loadCaptcha" type="button" class="text-blue-600 p-2 hover:bg-blue-50 rounded-full transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              <button @click="loadCaptcha" type="button"
+                class="text-blue-600 p-2 hover:bg-blue-50 rounded-full transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
               </button>
             </div>
@@ -113,9 +115,23 @@
         </p>
 
         <transition name="fade">
-          <div v-if="errorMessage"
-            class="mt-4 p-3 bg-red-50 text-red-600 rounded-lg text-xs text-center font-bold border border-red-100">
-            {{ errorMessage }}
+          <div v-if="errorMessage || validationErrors.length"
+            class="mt-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl shadow-sm animate-shake">
+            <div class="flex items-start">
+              <div class="flex-shrink-0">
+                <i class="fas fa-exclamation-circle text-red-500 mt-0.5"></i>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-xs font-black text-red-800 uppercase tracking-wider">Terjadi Kesalahan</h3>
+                <div class="mt-1 text-xs text-red-700 font-medium">
+                  <p v-if="errorMessage && !validationErrors.length">{{ errorMessage }}</p>
+
+                  <ul v-else class="list-disc pl-4 space-y-1">
+                    <li v-for="(err, index) in validationErrors" :key="index">{{ err }}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </transition>
 
@@ -135,8 +151,9 @@ export default {
       email: "",
       password: "",
       channel_name: "",
-      captchaUrl: "", 
+      captchaUrl: "",
       captchaInput: "",
+      validationErrors: [],
       errorMessage: "",
       isLoading: false,
     }
@@ -160,6 +177,7 @@ export default {
 
       this.isLoading = true
       this.errorMessage = ""
+      this.validationErrors = [];
 
       try {
         await axios.post(`api/v1/register`, {
@@ -171,10 +189,18 @@ export default {
         })
         this.$router.push("/login")
       } catch (err) {
-        this.errorMessage = err.response?.data?.message || "Registrasi gagal, silakan coba lagi."
-        this.loadCaptcha()
+        const response = err.response;
+
+        if (response?.status === 422) {
+          const errors = response.data.errors;
+          this.validationErrors = Object.values(errors).flat();
+        } else {
+          this.errorMessage = response?.data?.message || "Registrasi gagal, silakan coba lagi.";
+        }
+
+        this.loadCaptcha();
       } finally {
-        this.isLoading = false
+        this.isLoading = false;
       }
     }
   }
@@ -183,6 +209,7 @@ export default {
 
 <style scoped>
 @reference 'tailwindcss';
+
 .input-style {
   @apply w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 outline-none transition-all text-sm;
 }
@@ -196,6 +223,7 @@ export default {
     opacity: 0;
     transform: translateX(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
