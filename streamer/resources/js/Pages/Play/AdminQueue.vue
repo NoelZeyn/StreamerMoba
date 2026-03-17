@@ -92,7 +92,7 @@
                             class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
                             <i class="fas fa-play text-[10px]"></i>
                           </button>
-                          <button v-if="q.status === 'playing'" @click="updateStatus(q.id, 'done')"
+                          <button v-if="q.status === 'playing'" @click="updateStatus(q.id, 'completed')"
                             class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
                             <i class="fas fa-check text-[10px]"></i>
                           </button>
@@ -147,7 +147,7 @@
                             class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-all shadow-sm">
                             <i class="fas fa-play text-[10px]"></i>
                           </button>
-                          <button v-if="q.status === 'playing'" @click="updateStatus(q.id, 'done')"
+                          <button v-if="q.status === 'playing'" @click="updateStatus(q.id, 'completed')"
                             class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
                             <i class="fas fa-check text-[10px]"></i>
                           </button>
@@ -274,7 +274,7 @@ export default {
     statusStyle(status) {
       switch (status) {
         case 'playing': return 'bg-emerald-500 text-white shadow-sm';
-        case 'done': return 'bg-gray-100 text-gray-400 border border-gray-200';
+        case 'completed': return 'bg-gray-100 text-gray-400 border border-gray-200';
         case 'skipped': return 'bg-red-50 text-red-500 border border-red-100';
         default: return 'bg-blue-50 text-blue-600 border border-blue-100';
       }

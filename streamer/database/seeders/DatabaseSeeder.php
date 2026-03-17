@@ -53,12 +53,12 @@ class DatabaseSeeder extends Seeder
 
         $streamers = [$streamer1, $streamer2];
 
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 40; $i++) {
             Season::create([
                 'name' => "Season $i",
                 'start_date' => Carbon::now()->subMonths(20 - $i),
                 'end_date' => Carbon::now()->subMonths(19 - $i),
-                'is_active' => ($i == 20),
+                'is_active' => ($i == 40),
             ]);
         }
         $seasons = Season::all();

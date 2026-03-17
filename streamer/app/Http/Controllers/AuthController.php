@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Cache;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -87,7 +88,7 @@ class AuthController extends Controller
         ob_start();
         imagepng($image);
         $imageData = ob_get_clean();
-        imagedestroy($image);
+        // imagedestroy($image);
 
         return response($imageData)->header('Content-Type', 'image/png');
     }
@@ -151,6 +152,21 @@ class AuthController extends Controller
             return response()->json([
                 'message' => $e->getMessage()
             ], 400);
+        }
+    }
+
+    public function me(): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+
+            return response()->json($user);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
     }
 }

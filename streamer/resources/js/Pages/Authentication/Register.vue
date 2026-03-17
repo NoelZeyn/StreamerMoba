@@ -7,7 +7,7 @@
       <div class="relative z-10 p-10 lg:p-14 flex flex-col justify-between text-white w-full h-full text-right items-end">
         <div class="flex items-center gap-4 flex-row-reverse">
           <div class="bg-white/10 p-2 rounded-xl backdrop-blur-sm border border-white/20">
-            <img :src="Background" class="w-8 h-8 brightness-0 invert" />
+            <!-- <img :src="Background" class="w-8 h-8 brightness-0 invert" /> -->
           </div>
           <span class="text-xl font-bold tracking-wider uppercase">Sistem Stream</span>
         </div>
@@ -126,7 +126,6 @@
 </template>
 
 <script>
-import Background from "@/assets/PLN.svg"
 import axios from "axios"
 
 export default {
@@ -140,7 +139,6 @@ export default {
       captchaInput: "",
       errorMessage: "",
       isLoading: false,
-      Background,
     }
   },
 
@@ -150,8 +148,7 @@ export default {
 
   methods: {
     loadCaptcha() {
-      const baseUrl = "http://localhost:8000/api/captcha"
-      this.captchaUrl = `${baseUrl}?t=${new Date().getTime()}`
+      this.captchaUrl = `api/captcha?t=${new Date().getTime()}`
       this.captchaInput = ""
     },
 
@@ -165,8 +162,7 @@ export default {
       this.errorMessage = ""
 
       try {
-        const apiUrl = "http://localhost:8000/api/v1"
-        await axios.post(`${apiUrl}/register`, {
+        await axios.post(`api/v1/register`, {
           name: this.name,
           email: this.email,
           password: this.password,

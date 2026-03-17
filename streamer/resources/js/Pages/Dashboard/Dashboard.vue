@@ -139,7 +139,7 @@
           </div>
 
           <div class="space-y-6">
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+            <!-- <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
               <h2
                 class="text-[10px] font-bold text-slate-400 mb-6 uppercase tracking-[0.2em] flex items-center justify-between">
                 <span>Stream Performance</span>
@@ -187,7 +187,7 @@
                 class="w-full mt-8 py-3 bg-slate-50 text-slate-400 text-[10px] font-bold uppercase tracking-widest rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all border border-slate-100 cursor-pointer">
                 Full Analytics <i class="fas fa-arrow-right ml-1"></i>
               </button>
-            </div>
+            </div> -->
 
             <div class="bg-slate-900 rounded-xl p-5 border border-slate-800">
               <h3 class="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-3">Live Console</h3>

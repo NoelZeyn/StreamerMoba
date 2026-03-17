@@ -63,7 +63,6 @@ class SaweriaController extends Controller
                             ->first();
 
                         if (!$player) {
-                            Log::info("Saweria: Player baru terdeteksi ($mlbbId). Mencoba auto-create...");
                             $player = $this->autoCreatePlayer($user->id, $mlbbId, $mlbbServer);
                         }
                         // Jika Player ada (lama) atau berhasil dibuat (baru)

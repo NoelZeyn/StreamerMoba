@@ -7,9 +7,8 @@
       <span v-else>✕</span>
     </button>
 
-    <div v-if="isSidebarOpen && isMobile" 
-         class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[999]" 
-         @click="toggleSidebar"></div>
+    <div v-if="isSidebarOpen && isMobile" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[999]"
+      @click="toggleSidebar"></div>
 
     <aside :class="[
       'transition-all duration-300 z-[1000] fixed md:sticky top-0 left-0 h-screen w-[280px] bg-white border-r border-gray-100 flex flex-col shadow-sm',
@@ -19,17 +18,17 @@
       <div class="p-6 mb-2">
         <div class="flex items-center gap-3 px-2">
           <div class="bg-blue-600 p-1.5 rounded-lg shadow-blue-200 shadow-lg">
-           
+
           </div>
           <div class="flex flex-col">
             <span class="text-sm font-black text-gray-900 leading-none tracking-tight uppercase">Sistem Stream</span>
-            <span class="text-[10px] text-blue-600 font-bold tracking-widest uppercase">Vasta Edition</span>
+            <span class="text-[10px] text-blue-600 font-bold tracking-widest uppercase">Vasta</span>
           </div>
         </div>
       </div>
 
       <div class="flex-grow overflow-y-auto px-4 custom-scrollbar">
-        
+
         <div class="mb-6">
           <p class="px-4 text-[11px] font-extrabold text-blue-400 uppercase tracking-[0.2em] mb-3">
             Menu Utama
@@ -37,13 +36,14 @@
           <ul class="space-y-1">
             <router-link to="/dashboard" v-slot="{ isActive }">
               <li :class="menuClass(isActive || activeMenu === 'dashboard')" @click="setActive('dashboard')">
-                <img src="@/assets/dashboard.svg" class="w-5 h-5 opacity-70" :class="{'brightness-0 invert-0': isActive}" />
+                <img src="@/assets/dashboard.svg" class="w-5 h-5 opacity-70"
+                  :class="{ 'brightness-0 invert-0': isActive }" />
                 <span>Dashboard</span>
               </li>
             </router-link>
-            
+
             <router-link to="/schedules/create" v-slot="{ isActive }">
-              <li :class="menuClass(isActive)" >
+              <li :class="menuClass(isActive)">
                 <img src="@/assets/laporan1.svg" class="w-5 h-5 opacity-70" />
                 <span>Schedule</span>
               </li>
@@ -56,28 +56,29 @@
               </li>
             </router-link>
 
+
+          </ul>
+        </div>
+
+        <div class="mb-6">
+          <p class="px-4 text-[11px] font-extrabold text-blue-400 uppercase tracking-[0.2em] mb-3">
+            Saweria
+          </p>
+          <ul class="space-y-1">
             <router-link to="/donations" v-slot="{ isActive }">
               <li :class="menuClass(isActive)">
                 <img src="@/assets/folder.svg" class="w-5 h-5 opacity-70" />
                 <span>Donation</span>
               </li>
             </router-link>
-          </ul>
-        </div>
-<!-- 
-        <div class="mb-6">
-          <p class="px-4 text-[11px] font-extrabold text-blue-400 uppercase tracking-[0.2em] mb-3">
-            Laporan & Data
-          </p>
-          <ul class="space-y-1">
-            <router-link to="/statistic" v-slot="{ isActive }">
+            <router-link to="/saweria" v-slot="{ isActive }">
               <li :class="menuClass(isActive)">
                 <img src="@/assets/folder.svg" class="w-5 h-5 opacity-70" />
-                <span>Statistic</span>
+                <span>Saweria Integration</span>
               </li>
             </router-link>
           </ul>
-        </div> -->
+        </div>
 
       </div>
 
@@ -93,21 +94,16 @@
             </div>
           </div>
         </router-link> -->
-        
-        <button @click="showModalConfirm = true" 
+
+        <button @click="showModalConfirm = true"
           class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 transition-all group cursor-pointer">
           <img src="@/assets/SignOut.svg" class="w-5 h-5 transition-transform group-hover:translate-x-1" />
           <span>Keluar Aplikasi</span>
         </button>
       </div>
 
-      <ModalConfirm 
-        :visible="showModalConfirm" 
-        title="Konfirmasi Logout"
-        message="Sesi Anda akan berakhir. Ingin keluar?" 
-        @confirm="logout" 
-        @cancel="showModalConfirm = false" 
-      />
+      <ModalConfirm :visible="showModalConfirm" title="Konfirmasi Logout"
+        message="Sesi Anda akan berakhir. Ingin keluar?" @confirm="logout" @cancel="showModalConfirm = false" />
     </aside>
   </div>
 </template>
@@ -145,14 +141,14 @@ export default {
       axios.post("http://localhost:8000/api/v1/logout", {}, {
         headers: { Authorization: `Bearer ${token}` }
       })
-      .then(() => {
-        localStorage.clear();
-        this.$router.push("/login");
-      })
-      .catch(() => {
-        localStorage.clear();
-        this.$router.push("/login");
-      });
+        .then(() => {
+          localStorage.clear();
+          this.$router.push("/login");
+        })
+        .catch(() => {
+          localStorage.clear();
+          this.$router.push("/login");
+        });
     },
     toggleSidebar() {
       this.isSidebarOpen = !this.isSidebarOpen;
@@ -177,6 +173,7 @@ export default {
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: #e2e8f0;
   border-radius: 10px;

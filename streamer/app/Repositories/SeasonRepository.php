@@ -9,8 +9,8 @@ class SeasonRepository
 {
     public function list()
     {
-        return Season::all();
-    } 
+        return Season::orderBy('id', 'desc')->get();
+    }
 
     public function create(array $data): Season
     {

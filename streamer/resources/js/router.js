@@ -54,6 +54,11 @@ const routes = [
         meta: { title: "Queue List" }
     },
     {
+        path: "/saweria",
+        component: () => import("./Pages/Donation/Saweria.vue"),
+        meta: { title: "Saweria Integration" }
+    },
+    {
         path: "/:pathMatch(.*)*",
         redirect: "/login"
     }
