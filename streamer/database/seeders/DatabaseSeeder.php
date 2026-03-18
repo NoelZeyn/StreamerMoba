@@ -40,7 +40,8 @@ class DatabaseSeeder extends Seeder
             'email' => "ahmad@test.com",
             'password' => Hash::make('password123'),
             'channel_name' => "Ahmad_Gaming",
-            'webhook_token' => hash('sha256', Str::uuid() . Str::random(10))
+            'webhook_token' => hash('sha256', Str::uuid() . Str::random(10)),
+            'sociabuzz_token' => 'sbwhook-mkn59ntl0ytrsjzlme6ivukh'
         ]);
 
         $streamer2 = User::create([

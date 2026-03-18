@@ -59,6 +59,11 @@ const routes = [
         meta: { title: "Saweria Integration" }
     },
     {
+        path: "/sociabuzz",
+        component: () => import("./Pages/Donation/SociaBuzz.vue"),
+        meta: { title: "SociaBuzz Integration" }
+    },
+    {
         path: "/:pathMatch(.*)*",
         redirect: "/login"
     }

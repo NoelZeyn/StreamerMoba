@@ -25,119 +25,26 @@ class SaweriaController extends Controller
 
     public function handle(SaweriaWebhookRequest $request, $token): JsonResponse
     {
-        try {
-            $validated = $request->validated();
-            $user = User::where('webhook_token', $token)->first();
-    
-            if (!$user) {
-                return response()->json(['status' => false, 'message' => 'Invalid Token'], 404);
-            }
+        $user = User::where('webhook_token', $token)->first();
+        if (!$user) return response()->json(['status' => false], 404);
 
-            return DB::transaction(function () use ($user, $validated, $request) {
-                $donatorName = $validated['donator_name'] ?? 'Anonymous';
-                $amount      = $validated['amount_raw'] ?? 0;
-                $message     = $validated['message'] ?? '';
+        $validated = $request->validated();
 
-                Donation::create([
-                    'user_id'      => $user->id,
-                    'donator_name' => $donatorName,
-                    'email'        => $validated['email'] ?? null,
-                    'message'      => $message,
-                    'amount'       => $amount,
-                    'saweria_id'   => $validated['id'] ?? null,
-                    'raw_payload'  => $request->all(),
-                    'donated_at'   => now(),
-                ]);
+        $data = [
+            'donator_name' => $validated['donator_name'] ?? 'Anonymous',
+            'amount'       => $validated['amount_raw'] ?? 0,
+            'message'      => $validated['message'] ?? '',
+            'email'        => $validated['donator_email'] ?? null,
+            'external_id'  => $validated['id'] ?? null,
+            'platform'     => 'saweria',
+            'raw_payload'  => $request->all()
+        ];
 
-                if (str_contains(strtoupper($message), 'VIP')) {
+        $this->transactionService->processIncomingDonation($user, $data);
 
-                    $pattern = '/(\d{8,12})\s*\((\d{4,6})\)/';
-
-                    if (preg_match($pattern, $message, $matches)) {
-                        $mlbbId = $matches[1];
-                        $mlbbServer = $matches[2];
-
-                        $player = Player::where('user_id', $user->id)
-                            ->where('mlbb_id', $mlbbId)
-                            ->where('mlbb_server', $mlbbServer)
-                            ->first();
-
-                        if (!$player) {
-                            $player = $this->autoCreatePlayer($user->id, $mlbbId, $mlbbServer);
-                        }
-                        // Jika Player ada (lama) atau berhasil dibuat (baru)
-                        if ($player) {
-                            $qty = floor($amount / 1000);
-                            $dto = new CreateTransactionDTO(
-                                player_id: $player->id,
-                                quantity: $qty,
-                                price: $amount
-                            );
-
-                            $this->transactionService->createTransactionFromWebhook($dto, $user->id);
-                        } else {
-                            Log::error("Saweria: Gagal memproses transaksi karena Player tidak ditemukan & gagal auto-create API untuk ID $mlbbId.");
-                        }
-                    } else {
-                        // Jika ada kata VIP tapi format ID salah, coba cari berdasarkan Nickname Donatur
-                        Log::info("Saweria: Format ID tidak ditemukan dalam pesan, mencoba via Nickname: $donatorName");
-                        $this->processByNickname($donatorName, $amount, $user->id);
-                    }
-                }
-
-                return response()->json(['status' => true]);
-            });
-        } catch (\Throwable $th) {
-            Log::error('Saweria Webhook Error: ' . $th->getMessage() . ' Line: ' . $th->getLine());
-            return response()->json(['status' => false, 'error' => $th->getMessage()], 500);
-        }
+        return response()->json(['status' => true]);
     }
 
-    private function autoCreatePlayer($userId, $mlbbId, $mlbbServer)
-    {
-        try {
-            // Timeout dalam detik
-            $response = Http::timeout(5000)->withoutVerifying()->get("https://api.isan.eu.org/nickname/ml", [
-                'id' => $mlbbId,
-                'zone' => $mlbbServer
-            ]);
-
-            if ($response->successful()) {
-                $data = $response->json();
-                if (isset($data['success']) && $data['success']) {
-                    $nickname = urldecode(str_replace('+', ' ', $data['name']));
-
-                    $dto = new CreatePlayerDTO(
-                        user_id: $userId,
-                        name: $nickname,
-                        type: 'VIP',
-                        mlbb_id: $mlbbId,
-                        mlbb_server: $mlbbServer,
-                        play_balance: 0
-                    );
-                    
-                    return $this->playerService->create($dto);
-                }
-            }
-            return null;
-        } catch (\Exception $e) {
-            Log::error("AutoCreatePlayer Service Error: " . $e->getMessage());
-            return null;
-        }
-    }
-
-    private function processByNickname($name, $amount, $userId)
-    {
-        $player = Player::where('user_id', $userId)
-            ->where('name', $name)
-            ->where('type', 'VIP')
-            ->first();
-
-        if ($player) {
-            $dto = new CreateTransactionDTO($player->id, floor($amount / 1000), $amount);
-            $this->transactionService->createTransactionFromWebhook($dto, $userId);
-        }
-    }
 
     /**
      * Proxy untuk Frontend Vue Nickname Checker

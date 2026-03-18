@@ -14,20 +14,18 @@ return new class extends Migration
         Schema::create('donations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-
             $table->string('donator_name');
             $table->string('email')->nullable();
             $table->text('message')->nullable();
-
             $table->unsignedBigInteger('amount');
             $table->string('currency')->default('IDR');
 
-            $table->string('saweria_id')->nullable()->index();
+            // PERBAIKAN DI SINI
+            $table->string('platform')->default('saweria'); // saweria, sociabuzz
+            $table->string('external_id')->nullable()->index(); // ID dari saweria/sociabuzz
 
             $table->json('raw_payload')->nullable();
-
             $table->timestamp('donated_at')->nullable();
-
             $table->timestamps();
         });
     }

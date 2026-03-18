@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\DTO\CreateUserDTO;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Cache;
-use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class AuthController extends Controller
 {
@@ -91,6 +93,29 @@ class AuthController extends Controller
         // imagedestroy($image);
 
         return response($imageData)->header('Content-Type', 'image/png');
+    }
+
+    public function updateSociaBuzzToken(Request $request): JsonResponse
+    {
+        $request->validate([
+            'sociabuzz_token' => 'required|string|max:255'
+        ]);
+
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        User::where('id', $user->id)->update([
+            'sociabuzz_token' => $request->sociabuzz_token
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Token Sociabuzz berhasil diperbarui',
+            'data' => ['sociabuzz_token' => $request->sociabuzz_token]
+        ]);
     }
 
     public function login(LoginRequest $request): JsonResponse
