@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <div class="flex-grow overflow-y-auto px-4 custom-scrollbar">
+      <div class="flex-1 overflow-y-auto px-4 custom-scrollbar">
         <div class="mb-6">
           <p class="px-4 text-[11px] font-extrabold text-blue-400 uppercase tracking-[0.2em] mb-3">
             Menu Utama

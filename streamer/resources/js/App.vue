@@ -28,7 +28,7 @@
 }
 
 body {
-  overflow: hidden;
+  overflow-x: hidden;
   margin: 0;
 }
 </style>
