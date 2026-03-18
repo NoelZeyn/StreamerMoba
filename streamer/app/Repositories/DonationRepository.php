@@ -18,8 +18,10 @@ class DonationRepository
         return Donation::create($data);
     }
 
-    public function findBySaweriaId($saweriaId)
+    public function findByExternalId($externalId, $platform)
     {
-        return Donation::where('saweria_id', $saweriaId)->first();
+        return Donation::where('external_id', $externalId)
+            ->where('platform', $platform)
+            ->first();
     }
 }

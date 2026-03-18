@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Services\DonationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Donation;
 
 class DonationController extends Controller
 {
@@ -12,9 +12,6 @@ class DonationController extends Controller
         protected DonationService $donationService
     ) {}
 
-    /**
-     * Menampilkan riwayat donasi untuk UI Vue
-     */
     public function index(): JsonResponse
     {
         $userId = Auth::id();
@@ -26,12 +23,9 @@ class DonationController extends Controller
         ]);
     }
 
-    /**
-     * Detail donasi (jika ingin melihat raw payload)
-     */
     public function show($id): JsonResponse
     {
-        $donation = \App\Models\Donation::where('user_id', Auth::id())->findOrFail($id);
+        $donation = Donation::where('user_id', Auth::id())->findOrFail($id);
 
         return response()->json([
             'success' => true,

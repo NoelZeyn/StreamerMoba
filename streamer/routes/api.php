@@ -12,6 +12,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaweriaController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SeasonController;
+use App\Http\Controllers\SociaBuzzController;
 use App\Http\Controllers\StreamerQueueController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Container\Attributes\Auth;
@@ -21,6 +22,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/public/queue-list', [PublicQueueController::class, 'getQueueItems'])->middleware('throttle:60,1');
     Route::get('/mlbb-nickname', [SaweriaController::class, 'proxyNickname'])->middleware('throttle:20,1');
     Route::post('/webhook/saweria/{token}', [SaweriaController::class, 'handle']);
+    Route::post('/webhook/sociabuzz/{token}', [SociaBuzzController::class, 'handle']);
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/public/join-queue', [QueueController::class, 'store'])->middleware('throttle:5,1');
@@ -30,6 +32,7 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
         Route::post('/logout', [AuthController::class, 'logout']);
+        Route::post('/user/update-sociabuzz-token', [AuthController::class, 'updateSociabuzzToken']);
     });
 
     Route::middleware('auth:api')->group(function () {

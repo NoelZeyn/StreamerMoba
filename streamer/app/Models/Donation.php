@@ -12,7 +12,8 @@ class Donation extends Model
         'message',
         'amount',
         'currency',
-        'saweria_id',
+        'platform',
+        'external_id',
         'raw_payload',
         'donated_at'
     ];

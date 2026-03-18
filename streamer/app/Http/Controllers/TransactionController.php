@@ -34,25 +34,25 @@ class TransactionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateTransactionRequest $request): JsonResponse
-    {
-        try {
-            $validated = $request->validated();
+    // public function store(CreateTransactionRequest $request): JsonResponse
+    // {
+    //     try {
+    //         $validated = $request->validated();
 
-            $dto = new CreateTransactionDTO(
-                $validated['user_id'],
-                $validated['player_id'],
-                $validated['quantity'],
-                $validated['price']
-            );
+    //         $dto = new CreateTransactionDTO(
+    //             $validated['user_id'],
+    //             $validated['player_id'],
+    //             $validated['quantity'],
+    //             $validated['price']
+    //         );
 
-            $transaction = $this->transactionService->createTransaction($dto);
+    //         $transaction = $this->transactionService->createTransaction($dto);
 
-            return $this->success($transaction, 'Transaction created successfully');
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage(), 400);
-        }
-    }
+    //         return $this->success($transaction, 'Transaction created successfully');
+    //     } catch (\Exception $e) {
+    //         return $this->error($e->getMessage(), 400);
+    //     }
+    // }
     /**
      * Display the specified resource.
      */

@@ -59,7 +59,7 @@
 
         <div class="mb-6">
           <p class="px-4 text-[11px] font-extrabold text-blue-400 uppercase tracking-[0.2em] mb-3">
-            Saweria
+            Integration
           </p>
           <ul class="space-y-1">
             <router-link to="/donations" v-slot="{ isActive }">
@@ -72,6 +72,13 @@
               <li :class="menuClass(isActive)" @click="handleNavigation()">
                 <img src="@/assets/folder.svg" class="w-5 h-5 opacity-70" />
                 <span>Saweria Integration</span>
+              </li>
+            </router-link>
+
+            <router-link to="/sociabuzz" v-slot="{ isActive }">
+              <li :class="menuClass(isActive)" @click="handleNavigation()">
+                <img src="@/assets/folder.svg" class="w-5 h-5 opacity-70" />
+                <span>Sociabuzz Integration</span>
               </li>
             </router-link>
           </ul>

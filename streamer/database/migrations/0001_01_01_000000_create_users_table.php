@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('channel_name')->nullable();
             $table->string('remember_token')->nullable();
             $table->string('webhook_token')->unique()->nullable();
+            $table->string('sociabuzz_token')->unique()->nullable();
             $table->timestamps();
         });
 

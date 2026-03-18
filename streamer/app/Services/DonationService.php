@@ -18,12 +18,8 @@ class DonationService
         return $this->donationRepo->getAllByUserId($userId);
     }
 
-    /**
-     * Logika untuk mencari atau membuat player secara otomatis
-     */
     public function findOrCreatePlayer($userId, $mlbbId, $mlbbServer)
     {
-        // 1. Cari di DB lokal
         $player = Player::where('user_id', $userId)
             ->where('mlbb_id', $mlbbId)
             ->where('mlbb_server', $mlbbServer)
@@ -31,7 +27,6 @@ class DonationService
 
         if ($player) return $player;
 
-        // 2. Jika tidak ada, tembak API Isan
         try {
             $response = Http::timeout(10)->withoutVerifying()
                 ->get("https://api.isan.eu.org/nickname/ml", [
